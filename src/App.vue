@@ -1,28 +1,50 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <el-container>
+      <el-header class="header">
+        <top-bar></top-bar>
+      </el-header>
+      <el-container>
+        <el-aside class="aside">
+          <left-bar></left-bar>
+        </el-aside>
+        <el-main class="main">
+          <Main></Main>
+        </el-main>
+      </el-container>
+    </el-container>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+  import TopBar from 'components/content/topBar/TopBar'
+  import LeftBar from 'components/content/leftBar/LeftBar'
+  import Main from 'components/content/main/Main'
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  export default {
+    name: 'App',
+    components: {
+      TopBar,
+      LeftBar,
+      Main
+    }
   }
-}
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  @import './assets/css/base.css';
+
+  .header {
+    background-color: cornflowerblue;
+    height: 70px !important;
+  }
+
+  .aside {
+    background-color: darkgray;
+    width: 250px !important;
+  }
+
+  .main {
+    background-color: darkorchid;
+  }
 </style>
