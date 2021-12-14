@@ -2,13 +2,16 @@
   <div id="app">
     <el-container>
       <el-header class="header">
+        <!-- 顶部 -->
         <top-bar></top-bar>
       </el-header>
       <el-container>
         <el-aside class="aside">
+          <!-- 左 侧边栏 -->
           <left-bar></left-bar>
         </el-aside>
         <el-main class="main">
+          <!-- 主要内容区 -->
           <Main></Main>
         </el-main>
       </el-container>

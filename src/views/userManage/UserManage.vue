@@ -1,11 +1,11 @@
 <template>
     <div>
-        <router-view></router-view>
+        <h1>UserManage</h1>
     </div>
 </template>
 <script>
 export default {
-   name: 'Main',
+   name: 'UserManage',
    data() {
       return {
       }
