@@ -1,9 +1,9 @@
 <template>
     <div class="user-manage">
         <!-- 功能区 -->
-        <domain></domain>
+        <domain :selection="selection"></domain>
         <!-- 信息展示区 -->
-        <data-show></data-show>
+        <data-show @rowSelected="rowSelected"></data-show>
     </div>
 </template>
 <script>
@@ -13,6 +13,7 @@
         name: 'UserManage',
         data() {
             return {
+                selection:[]
             }
         },
         created() {
@@ -20,6 +21,9 @@
         computed: {
         },
         methods: {
+            rowSelected(selection) {
+                this.selection = selection
+            }
         },
         components: {
             Domain,

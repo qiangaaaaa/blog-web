@@ -1,7 +1,7 @@
 <template>
     <div class="data-show">
         <template>
-            <el-table :data="tableData" style="width: 100%">
+            <el-table :data="tableData" style="width: 100%" @select="tableSelect">
                 <el-table-column type="selection" width="55">
                 </el-table-column>
                 <el-table-column prop="date" label="日期" width="180">
@@ -12,20 +12,23 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除
-                        </el-button>
+                        <data-edit-button :data="scope.row"></data-edit-button>
+                        <data-delete-button deleteInfo="[]" buttonText=""></data-delete-button>
                     </template>
                 </el-table-column>
+
             </el-table>
         </template>
     </div>
 </template>
 <script>
+    import DataEditButton from 'components/common/dataEditButton/DataEditButton'
+    import DataDeleteButton from 'components/common/dataDeleteButton/DataDeleteButton'
     export default {
         name: 'DataShow',
         data() {
             return {
+                rowSelected: 0, // 已选中的行数量
                 tableData: [{
                     date: '2016-05-02',
                     name: '王小虎',
@@ -64,13 +67,25 @@
         computed: {
         },
         methods: {
+            // 编辑
             handleEdit(index, row) {
                 console.log(index, row);
             },
+            // 删除
             handleDelete(index, row) {
                 console.log(index, row);
+                this.open()
+            },
+            // 当发生某行选中事件
+            tableSelect(selection, row) {
+                // 子传父（UserManage）
+                this.$emit('rowSelected',selection)
             }
         },
+        components: {
+            DataEditButton,
+            DataDeleteButton
+        }
     }
 </script>
 <style scoped>

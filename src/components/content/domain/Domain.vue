@@ -1,20 +1,18 @@
 <template>
     <div class="domain">
         <div class="input space">
-            <span>姓名：</span>
-            <el-input placeholder="请输入内容" v-model="input" clearable>
-            </el-input>
-        </div>
-        <div class="input space">
-            <span>姓名：</span>
-            <el-input placeholder="请输入内容" v-model="input" clearable>
+            <span>模糊查询：</span>
+            <el-input placeholder="请输入内容" v-model="search" clearable>
             </el-input>
         </div>
         <div class="space">
-            <el-button type="primary" icon="el-icon-search" round>搜索</el-button>
+            <el-button type="primary" icon="el-icon-search" round>查询</el-button>
         </div>
         <div class="space">
-            <el-button icon="el-icon-refresh-right" round>重置</el-button>
+            <el-button icon="el-icon-refresh-right" round @click="reset">重置</el-button>
+        </div>
+        <div class="space" v-if="deleteShow">
+            <el-button type="danger" round>删除选中项{{selectionNum}}</el-button>
         </div>
     </div>
 </template>
@@ -23,15 +21,31 @@
         name: 'Domain',
         data() {
             return {
-                input: ''
+                search: ''
             }
         },
         created() {
         },
         computed: {
+            selectionNum() {
+                return '（' + this.selection.length + '）'
+            },
+            deleteShow() {
+                return this.selection.length !== 0 
+            }
         },
         methods: {
+            // 清空搜索框内容
+            reset() {
+                this.search = ''
+            }
         },
+        props: {
+            selection: {
+                type: Array,
+                default: []
+            }
+        }
     }
 </script>
 <style scoped>
