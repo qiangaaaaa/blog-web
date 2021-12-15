@@ -40,14 +40,17 @@
   .header {
     background-color: cornflowerblue;
     height: 70px !important;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%);
   }
 
   .aside {
     background-color: darkgray;
     width: 250px !important;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%);
   }
 
-  .main {
-    background-color: darkorchid;
+  .main, .main>div{
+    height: 100%;
   }
+
 </style>

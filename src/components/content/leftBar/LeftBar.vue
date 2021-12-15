@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="left-bar">
         <el-menu :default-active="this.$route.path" class="el-menu-vertical-demo" :collapse="isCollapse" :router="true">
             <div v-for="(item,i) in menuItem" :key="i">
                 <div v-if="item.isHaveSon">
@@ -84,4 +84,6 @@
     }
 </script>
 <style scoped>
+    .left-bar {
+    }
 </style>
