@@ -1,8 +1,8 @@
 <template>
     <div class="data-delete-button">
-        <el-button type="danger" icon="el-icon-delete" circle @click="deleteRow"
-            v-bind:class="{ notMarginLeft:notMarginLeft}">{{buttonText}}</el-button>
         <!-- 使用v-if 两层 解决 边框 和 内容 问题 -->
+        <el-button type="danger" :icon="deleteButton.buttonStyle.icon" circle @click="deleteRow" v-if="notMarginLeft"></el-button>
+        <el-button type="danger" :icon="deleteButton.buttonStyle.icon" round @click="deleteRow" v-else>{{deleteButton.deleteButtonText}}</el-button>
     </div>
 </template>
 <script>
@@ -16,8 +16,9 @@
         created() {
         },
         computed: {
+            // 原因：el-button中有字符串，会生成span标签，增加margin-left
             notMarginLeft() {
-                return this.buttonText === ''
+                return this.deleteButton.deleteButtonText === ''
             }
         },
         methods: {
@@ -26,7 +27,7 @@
             },
             // 删除-模态框
             open() {
-                this.$confirm('此操作将永久删除该行数据, 是否继续?', '提示', {
+                this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning',
@@ -48,23 +49,16 @@
             }
         },
         props: {
-            // 要删除的数据的信息 基本提供：1.表名 2.要删除的数据
-            // deleteInfo: {
-            //     type: Object,
-            //     default: {}
-            // },
-            // buttonStyle: {
-            //     type: Object,
-            //     default: {
-            //         icon: 'el-icon-delete',
-            //         isRound: false,
-            //         isCircle: true
-            //     }
-            // },
-            buttonText: {
-                type: String,
-                default: ''
-            }
+            deleteButton: {
+                type: Object,
+                default: {
+                    deleteInfo: {},
+                    deleteButtonText: '',
+                    buttonStyle: {
+                        icon: ''
+                    }
+                }
+            },
         }
     }
 </script>
@@ -73,10 +67,4 @@
         display: inline-block;
         margin: 7px 15px;
     }
-
-    .data-delete-button i{
-        color: red;
-
-    }
-
 </style>

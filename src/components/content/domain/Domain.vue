@@ -12,26 +12,34 @@
             <el-button icon="el-icon-refresh-right" round @click="reset">重置</el-button>
         </div>
         <div class="space" v-if="deleteShow">
-            <el-button type="danger" round>删除选中项{{selectionNum}}</el-button>
+            <data-delete-button :deleteButton="deleteButton"></data-delete-button>
         </div>
     </div>
 </template>
 <script>
+    import DataDeleteButton from 'components/common/dataDeleteButton/DataDeleteButton'
     export default {
         name: 'Domain',
         data() {
             return {
-                search: ''
+                search: '',
+                deleteButton: {
+                    deleteInfo: {},
+                    deleteButtonText: '',
+                    buttonStyle: {},
+                },
+                // 按钮是否显示
+                deleteShow: false
+                // 已选中的数据
+                // selection: []
             }
         },
-        created() {
-        },
-        computed: {
-            selectionNum() {
-                return '（' + this.selection.length + '）'
-            },
-            deleteShow() {
-                return this.selection.length !== 0 
+        watch: {
+            selection(newValue, oldValue) {
+                // 传递 deleteButton信息
+                this.deleteButton.deleteButtonText = '删除选中项' + '(' + newValue.length + ')'
+
+                this.deleteShow = newValue.length !== 0
             }
         },
         methods: {
@@ -45,6 +53,9 @@
                 type: Array,
                 default: []
             }
+        },
+        components: {
+            DataDeleteButton
         }
     }
 </script>

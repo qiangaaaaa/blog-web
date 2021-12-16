@@ -13,7 +13,7 @@
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <data-edit-button :data="scope.row"></data-edit-button>
-                        <data-delete-button deleteInfo="[]" buttonText=""></data-delete-button>
+                        <data-delete-button :deleteButton="deleteButton"></data-delete-button>
                     </template>
                 </el-table-column>
 
@@ -28,7 +28,19 @@
         name: 'DataShow',
         data() {
             return {
+                deleteButton: {
+                    deleteInfo: {},
+                    deleteButtonText: '',
+                    buttonStyle: {
+                        icon: 'el-icon-delete'
+                    },
+                },
                 rowSelected: 0, // 已选中的行数量
+                buttonStyle: {
+                    icon: 'el-icon-delete',
+                    isRound: false,
+                    isCircle: true
+                },
                 tableData: [{
                     date: '2016-05-02',
                     name: '王小虎',
