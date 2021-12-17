@@ -51,7 +51,9 @@
         props: {
             selection: {
                 type: Array,
-                default: []
+                default() {
+                    return []
+                }
             }
         },
         components: {

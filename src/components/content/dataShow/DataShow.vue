@@ -1,7 +1,7 @@
 <template>
     <div class="data-show">
         <template>
-            <el-table :data="tableData.list" style="width: 100%" @select="tableSelect" @select-all="tableSelect">
+            <el-table :data="list" style="width: 100%" @select="tableSelect" @select-all="tableSelect">
                 <el-table-column type="selection" width="55">
                 </el-table-column>
                 <el-table-column :prop="item" :label="item" v-for="(item,index) in keys" :key="index">
@@ -14,9 +14,9 @@
                 </el-table-column>
             </el-table>
             <div class="block paging">
-                <el-pagination @current-change="handleCurrentChange" :current-page.sync="tableData.currPage"
-                    :page-size="tableData.pageSize*10" layout="prev, pager, next, jumper"
-                    :total="tableData.totalCount*10">
+                <el-pagination @current-change="handleCurrentChange" :current-page.sync="currPage"
+                    :page-size="pageSize*10" layout="prev, pager, next, jumper"
+                    :total="totalCount*10">
                 </el-pagination>
             </div>
         </template>
@@ -36,58 +36,18 @@
                         icon: 'el-icon-delete'
                     },
                 },
-                tableData: {},
                 rowSelected: 0, // 已选中的行数量
-                allData: `{
-  "status": 0,
-  "message": "操作成功",
-  "data": {
-    "totalCount": 11,
-    "pageSize": 5,
-    "totalPage": 3,
-    "currPage": 1,
-    "list": [
-      {
-        "casualUserId": 19,
-        "email": "9@qq.com",
-        "nickname": "aa"
-      },
-      {
-        "casualUserId": 18,
-        "email": "8@qq.com",
-        "nickname": "aa"
-      },
-      {
-        "casualUserId": 17,
-        "email": "7@qq.com",
-        "nickname": "aa"
-      },
-      {
-        "casualUserId": 16,
-        "email": "6@qq.com",
-        "nickname": "aa"
-      },
-      {
-        "casualUserId": 15,
-        "email": "5@qq.com",
-        "nickname": "aa"
-      }
-    ]
-  }
-}`
+                list: [], // data`s list
+                pageSize: 0, // data`s pageSize
+                currPage: 0, // data`s currPage
+                totalCount: 0, // data`s totalCount
             }
-        },
-        created() {
-            this.tableData = eval('(' + this.allData + ')').data
         },
         mounted() {
         },
         computed: {
-            myData() {
-                return eval('(' + this.allData + ')').data
-            },
             keys() {
-                return Object.keys(eval('(' + this.allData + ')').data.list[0])
+                return Object.keys(this.list[0] || {})
             }
         },
         methods: {
@@ -106,13 +66,30 @@
                 this.$emit('rowSelected', selection)
             },
             // 当前页数发生改变时
-            handleCurrentChange(currentPage) {
-
+            handleCurrentChange(currPage) {
+                this.$emit('currPageChange',currPage)
             }
         },
         components: {
             DataEditButton,
             DataDeleteButton
+        },
+        props: {
+            tableData: {
+                type: Object,
+                default() {
+                    return {}
+                }
+            }
+        },
+        watch: {
+            tableData(newValue, oldValue) {
+                // “||”是为了防止请求过慢，newValue中没有以下key报错
+                this.list = newValue.list || this.list
+                this.pageSize = newValue.pageSize || this.pageSize 
+                this.currPage = newValue.currPage || this.currPage 
+                this.totalCount = newValue.totalCount || this.totalCount
+            }
         }
     }
 </script>
