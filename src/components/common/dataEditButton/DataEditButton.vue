@@ -1,7 +1,7 @@
 <template>
    <div class="data-edit-button">
       <el-button type="primary" icon="el-icon-edit" circle @click="show"></el-button>
-      <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+      <el-dialog title="编辑" :visible.sync="dialogFormVisible">
          <el-form :model="form">
             <el-form-item :label="key" :label-width="formLabelWidth" v-for="(value,key,index) in data"
                :key='index'>
@@ -9,8 +9,8 @@
             </el-form-item>
          </el-form>
          <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            <el-button @click="cancelEdit">取 消</el-button>
+            <el-button type="primary" @click="dialogFormVisible = false">立即修改</el-button>
          </div>
       </el-dialog>
    </div>
@@ -45,6 +45,9 @@
       methods: {
          show() {
             this.dialogFormVisible = true
+         },
+         cancelEdit() {
+            this.dialogFormVisible = false 
          }
       },
       props: {
