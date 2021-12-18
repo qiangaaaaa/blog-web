@@ -85,11 +85,10 @@
         },
         watch: {
             tableData(newValue, oldValue) {
-                // “||”是为了防止请求过慢，newValue中没有以下key报错
-                this.list = newValue.list || this.list
-                this.pageSize = newValue.pageSize || this.pageSize 
-                this.currPage = newValue.currPage || this.currPage 
-                this.totalCount = newValue.totalCount || this.totalCount
+                this.list = newValue.list
+                this.pageSize = newValue.pageSize
+                this.currPage = newValue.currPage
+                this.totalCount = newValue.totalCount
             }
         }
     }

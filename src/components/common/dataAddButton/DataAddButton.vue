@@ -51,6 +51,7 @@
                 addUser(`${nowUrl}/save`, this.addData).then(res => {
                     // 关闭模态框
                     this.dialogFormVisible = false
+                    console.log(res);
                     // 返回成功
                     if (res.data.status == 0) {
                         // 对数据进行清空
@@ -60,6 +61,8 @@
                             type: 'success',
                             message: '添加成功!'
                         });
+                        // 刷新表格数据
+                        this.$parent.$parent.getUserManageData(1)
                     }
 
                 }).catch(() => {
@@ -82,7 +85,6 @@
                     message: '取消添加'
                 });
             },
-
         },
         props: {
             keys: {

@@ -39,8 +39,8 @@
                 this.selection = selection
             },
             // 请求getUserManageData封装
-            getUserManageData() {
-                getUserManageData(this.page).then(res => {
+            getUserManageData(dataPage=this.page,dataKey='') {
+                getUserManageData(dataPage,dataKey).then(res => {
                     this.tableData = res.data.data
                     // 更新表头
                     this.keys = Object.keys(this.tableData.list[0] || [])

@@ -2,11 +2,11 @@
     <div class="domain">
         <div class="input space">
             <span>模糊查询：</span>
-            <el-input placeholder="请输入内容" v-model="search" clearable>
+            <el-input placeholder="请输入内容" v-model="search" clearable @input="searchInput">
             </el-input>
         </div>
         <div class="space">
-            <el-button type="primary" icon="el-icon-search" round>查询</el-button>
+            <el-button type="primary" icon="el-icon-search" round @click="searchClick">查询</el-button>
         </div>
         <div class="space">
             <el-button icon="el-icon-refresh-right" round @click="reset">重置</el-button>
@@ -22,6 +22,8 @@
 <script>
     import DataDeleteButton from 'components/common/dataDeleteButton/DataDeleteButton'
     import DataAddButton from 'components/common/dataAddButton/DataAddButton'
+    import {searchInputDebounceMixin} from 'common/mixin'
+
     export default {
         name: 'Domain',
         data() {
@@ -42,7 +44,6 @@
             selection(newValue, oldValue) {
                 // 传递 deleteButton信息
                 this.deleteButton.deleteButtonText = '删除选中项' + '(' + newValue.length + ')'
-
                 this.deleteShow = newValue.length !== 0
             }
         },
@@ -51,9 +52,10 @@
             reset() {
                 this.search = ''
             },
-            addInfo() {
-
-            }
+            // 点击搜索按钮 点击事件触发
+            searchClick() {
+                this.$parent.getUserManageData(1, this.search)
+            },
         },
         props: {
             selection: {
@@ -69,10 +71,15 @@
         },
         props: {
             keys: {
-                type:Array,
-                default:[]
+                type: Array,
+                default: []
+            },
+            selection: {
+                type: Array,
+                default: []
             }
-        }
+        },
+        mixins: [searchInputDebounceMixin]
     }
 </script>
 <style scoped>
