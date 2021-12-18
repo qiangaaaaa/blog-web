@@ -19,7 +19,8 @@
                 selection: [], // 选中的数据
                 tableData: {}, // 就是接口中的data部分
                 page: 1, // 当前访问到第几页数据
-                keys: [] // 表头
+                keys: [], // 表头
+                url:'casualuser'
             }
         },
         created() {

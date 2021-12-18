@@ -15,7 +15,7 @@
             <data-delete-button :deleteButton="deleteButton"></data-delete-button>
         </div>
         <div class="addButton">
-            <data-add-button :keys="keys"></data-add-button>
+            <data-add-button :keys="keys.slice(1)"></data-add-button>
         </div>
     </div>
 </template>
