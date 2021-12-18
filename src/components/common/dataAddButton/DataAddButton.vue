@@ -63,14 +63,15 @@
                         });
                         // 刷新表格数据
                         this.$parent.$parent.getUserManageData(1)
+                    } else {
+                        this.dialogFormVisible = false
+                        this.$message.error('错误,请检查填写内容后重试！');
                     }
 
                 }).catch(() => {
                     this.dialogFormVisible = false
-                    this.$message({
-                        type: 'info',
-                        message: '添加时发送未知错误,请重试！'
-                    });
+                    this.$message.error('错误,请检查填写内容后后重试！！');
+
                 })
             },
             // 取消按钮 点击事件
