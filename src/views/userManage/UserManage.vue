@@ -1,9 +1,9 @@
 <template>
     <div class="user-manage">
         <!-- 功能区 -->
-        <domain :selection="selection"></domain>
+        <domain :selection="selection" :keys="keys"></domain>
         <!-- 信息展示区 -->
-        <data-show @rowSelected="rowSelected" :tableData="tableData" @currPageChange="currPageChange"></data-show>
+        <data-show @rowSelected="rowSelected" :tableData="tableData" :keys="keys" @currPageChange="currPageChange"></data-show>
     </div>
 </template>
 <script>
@@ -18,7 +18,8 @@
             return {
                 selection: [], // 选中的数据
                 tableData: {}, // 就是接口中的data部分
-                page: 1 // 当前访问到第几页数据
+                page: 1, // 当前访问到第几页数据
+                keys: [] // 表头
             }
         },
         created() {
@@ -40,6 +41,8 @@
             getUserManageData() {
                 getUserManageData(this.page).then(res => {
                     this.tableData = res.data.data
+                    // 更新表头
+                    this.keys = Object.keys(this.tableData.list[0] || [])
                 })
             },
             currPageChange(currPage) {

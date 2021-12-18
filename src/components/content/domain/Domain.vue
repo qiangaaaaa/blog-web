@@ -14,10 +14,14 @@
         <div class="space" v-if="deleteShow">
             <data-delete-button :deleteButton="deleteButton"></data-delete-button>
         </div>
+        <div class="addButton">
+            <data-add-button :keys="keys"></data-add-button>
+        </div>
     </div>
 </template>
 <script>
     import DataDeleteButton from 'components/common/dataDeleteButton/DataDeleteButton'
+    import DataAddButton from 'components/common/dataAddButton/DataAddButton'
     export default {
         name: 'Domain',
         data() {
@@ -46,6 +50,9 @@
             // 清空搜索框内容
             reset() {
                 this.search = ''
+            },
+            addInfo() {
+
             }
         },
         props: {
@@ -57,7 +64,14 @@
             }
         },
         components: {
-            DataDeleteButton
+            DataDeleteButton,
+            DataAddButton
+        },
+        props: {
+            keys: {
+                type:Array,
+                default:[]
+            }
         }
     }
 </script>
@@ -85,5 +99,9 @@
 
     .input span {
         white-space: nowrap;
+    }
+
+    .addButton {
+        margin: 0 200px 0 auto;
     }
 </style>

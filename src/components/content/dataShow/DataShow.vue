@@ -45,11 +45,6 @@
         },
         mounted() {
         },
-        computed: {
-            keys() {
-                return Object.keys(this.list[0] || {})
-            }
-        },
         methods: {
             // 编辑
             handleEdit(index, row) {
@@ -79,6 +74,12 @@
                 type: Object,
                 default() {
                     return {}
+                }
+            },
+            keys: {
+                type: Array,
+                default() {
+                    return []
                 }
             }
         },
