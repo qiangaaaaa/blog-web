@@ -20,7 +20,7 @@
                 tableData: {}, // 就是接口中的data部分
                 page: 1, // 当前访问到第几页数据
                 keys: [], // 表头
-                url:'casualuser'
+                url:'casualuser' // 用于网络请求定位是哪个表
             }
         },
         created() {

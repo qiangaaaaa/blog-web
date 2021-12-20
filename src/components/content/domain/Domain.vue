@@ -51,19 +51,13 @@
             // 清空搜索框内容
             reset() {
                 this.search = ''
+                // 刷新表格
+                this.searchClick()
             },
             // 点击搜索按钮 点击事件触发
             searchClick() {
                 this.$parent.getUserManageData(1, this.search)
             },
-        },
-        props: {
-            selection: {
-                type: Array,
-                default() {
-                    return []
-                }
-            }
         },
         components: {
             DataDeleteButton,
