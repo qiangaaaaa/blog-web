@@ -16,8 +16,8 @@ export function addUser(url, data) {
 // 修改用户数据
 export function updateUser(url, data) {
     return request({
-        method: 'post',
+        method: 'put',
         url,
-        data
+        data,
     })
 }

@@ -68,14 +68,26 @@
          },
          // 立即修改
          modifyQuick() {
-            // 有BUG
-            const nowUrl = this.$parent.$parent.url
-            updateUser(`${nowUrl}/save`, this.changedData).then(res => {
+            updateUser(this.requestUrl, this.changedData).then(res => {
                this.dialogFormVisible = false
-               console.log(res);
-               // 刷新表格数据
-               this.$parent.$parent.getUserManageData(1)
+                // 返回成功
+                if (res.data.status == 0) {
+                        // 消息提示成功
+                        this.$message({
+                            type: 'success',
+                            message: '修改成功!'
+                        });
+                        // 刷新表格数据
+                        this.refresh()
+                    } else {
+                        this.dialogFormVisible = false
+                        this.$message.error(res.data.message);
+                    }
             })
+         },
+         // 数据刷新
+         refresh() {
+            this.$emit('refresh')
          }
       },
       props: {
@@ -84,6 +96,10 @@
             type: Object,
             default: {}
          },
+         requestUrl: {
+            type: String,
+            default: ''
+         }
       }
    }
 </script>

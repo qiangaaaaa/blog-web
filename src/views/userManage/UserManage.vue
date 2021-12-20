@@ -3,7 +3,7 @@
         <!-- 功能区 -->
         <domain :selection="selection" :keys="keys"></domain>
         <!-- 信息展示区 -->
-        <data-show @rowSelected="rowSelected" :tableData="tableData" :keys="keys" @currPageChange="currPageChange">
+        <data-show @rowSelected="rowSelected" :tableData="tableData" :keys="keys" @currPageChange="currPageChange" @refresh="refresh">
         </data-show>
     </div>
 </template>
@@ -51,6 +51,10 @@
             currPageChange(currPage) {
                 this.page = currPage
             },
+            refresh() {
+                console.log('刷新成功');
+                this.getUserManageData(1)
+            }
         },
         components: {
             Domain,

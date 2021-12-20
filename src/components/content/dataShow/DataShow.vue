@@ -8,7 +8,7 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <data-edit-button :data="scope.row"></data-edit-button>
+                        <data-edit-button :data="scope.row" requestUrl="casualuser/update" @refresh="refresh"></data-edit-button>
                         <data-delete-button :deleteButton="deleteButton"></data-delete-button>
                     </template>
                 </el-table-column>
@@ -63,6 +63,10 @@
             // 当前页数发生改变时
             handleCurrentChange(currPage) {
                 this.$emit('currPageChange',currPage)
+            },
+            // 数据刷新
+            refresh() {
+                this.$emit('refresh')
             }
         },
         components: {
