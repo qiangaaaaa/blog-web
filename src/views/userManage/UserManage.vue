@@ -3,7 +3,8 @@
         <!-- 功能区 -->
         <domain :selection="selection" :keys="keys"></domain>
         <!-- 信息展示区 -->
-        <data-show @rowSelected="rowSelected" :tableData="tableData" :keys="keys" @currPageChange="currPageChange"></data-show>
+        <data-show @rowSelected="rowSelected" :tableData="tableData" :keys="keys" @currPageChange="currPageChange">
+        </data-show>
     </div>
 </template>
 <script>
@@ -20,10 +21,11 @@
                 tableData: {}, // 就是接口中的data部分
                 page: 1, // 当前访问到第几页数据
                 keys: [], // 表头
-                url:'casualuser' // 用于网络请求定位是哪个表
+                url: 'casualuser', // 用于网络请求定位是哪个表,
             }
         },
         created() {
+            // 初始化数据
             this.getUserManageData()
         },
         computed: {
@@ -39,8 +41,8 @@
                 this.selection = selection
             },
             // 请求getUserManageData封装
-            getUserManageData(dataPage=this.page,dataKey='') {
-                getUserManageData(dataPage,dataKey).then(res => {
+            getUserManageData(dataPage = this.page, dataKey = '') {
+                getUserManageData(dataPage, dataKey).then(res => {
                     this.tableData = res.data.data
                     // 更新表头
                     this.keys = Object.keys(this.tableData.list[0] || [])
@@ -48,7 +50,7 @@
             },
             currPageChange(currPage) {
                 this.page = currPage
-            }
+            },
         },
         components: {
             Domain,

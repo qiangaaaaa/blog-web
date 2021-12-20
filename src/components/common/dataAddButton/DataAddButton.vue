@@ -1,10 +1,9 @@
 <template>
     <div>
         <el-button type="success" icon="el-icon-plus" round @click="show">添加</el-button>
-
         <el-dialog title="新增" :visible.sync="dialogFormVisible">
-            <el-form :model="form">
-                <el-form-item :label="item" v-for="(item,index) in keys" :key='index'>
+            <el-form :model="addData" :rules="rules">
+                <el-form-item :label="item" v-for="(item,index) in keys" :key='index' :prop="item">
                     <el-input v-model="addData[item]" autocomplete="off"></el-input>
                 </el-form-item>
             </el-form>
@@ -24,20 +23,28 @@
         data() {
             return {
                 form: {
-                    name: '',
-                    region: '',
-                    date1: '',
-                    date2: '',
-                    delivery: false,
-                    type: [],
-                    resource: '',
-                    desc: ''
                 },
                 dialogFormVisible: false,
-                addData: {}
+                addData: {},
+                // 表单验证规则
+                rules: {}
             }
         },
-        created() {
+        watch: {
+            keys(newValue, oldValue) {
+                newValue.forEach(item => {
+                    if (item === 'email') {
+                        this.rules[item] = [
+                            { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+                            { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+                        ]
+                    }else {
+                        this.rules[item] = [
+                            { required: true, message: `请输入${item}`, trigger: 'blur' },
+                        ]
+                    }
+                })
+            }
         },
         computed: {
         },
@@ -47,8 +54,7 @@
             },
             // 立即添加
             addQuick() {
-                const nowUrl = this.$parent.$parent.url
-                addUser(`${nowUrl}/save`, this.addData).then(res => {
+                addUser(this.requestUrl, this.addData).then(res => {
                     // 关闭模态框
                     this.dialogFormVisible = false
                     console.log(res);
@@ -92,6 +98,10 @@
                 type: Array,
                 default: []
             },
+            requestUrl: {
+                type: String,
+                default: ''
+            }
         }
     }
 </script>

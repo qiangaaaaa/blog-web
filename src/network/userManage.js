@@ -3,7 +3,7 @@ import {
 } from "./request";
 
 // 请求数据--page页的
-export function getUserManageData(page=1,key='') {
+export function getUserManageData(page = 1, key = '') {
     return request({
         url: `/casualuser/list?page=${page}&limit=5&sidx=casual_user_id&order=desc&key=${key}`
     })
