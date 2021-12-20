@@ -71,7 +71,7 @@
                         this.$parent.$parent.getUserManageData(1)
                     } else {
                         this.dialogFormVisible = false
-                        this.$message.error('错误,请检查填写内容后重试！');
+                        this.$message.error(res.data.message);
                     }
 
                 }).catch(() => {
