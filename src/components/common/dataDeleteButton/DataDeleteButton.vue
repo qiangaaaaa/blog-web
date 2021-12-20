@@ -1,11 +1,15 @@
 <template>
     <div class="data-delete-button">
         <!-- 使用v-if 两层 解决 边框 和 内容 问题 -->
-        <el-button type="danger" :icon="deleteButton.buttonStyle.icon" circle @click="deleteRow" v-if="notMarginLeft"></el-button>
-        <el-button type="danger" :icon="deleteButton.buttonStyle.icon" round @click="deleteRow" v-else>{{deleteButton.deleteButtonText}}</el-button>
+        <el-button type="danger" :icon="deleteButton.buttonStyle.icon" circle @click="deleteRow" v-if="notMarginLeft">
+        </el-button>
+        <el-button type="danger" :icon="deleteButton.buttonStyle.icon" round @click="deleteRow" v-else>
+            {{deleteButton.deleteButtonText}}</el-button>
     </div>
 </template>
 <script>
+    import { deleteUser } from 'network/common'
+
     // 注：此按钮只能删除一个数据
     export default {
         name: 'DataDeleteButton',
@@ -22,6 +26,7 @@
             }
         },
         methods: {
+            // 删除按钮点击事件
             deleteRow() {
                 this.open()
             },
@@ -33,32 +38,53 @@
                     type: 'warning',
                     center: true
                 }).then(() => {
+                    const currentId = Object.keys(this.data)[0]
                     // post请求 删除数据
-                    // 消息提示成功
-                    this.$message({
-                        type: 'success',
-                        message: '删除成功!'
-                    });
+                    deleteUser(this.requestUrl, [this.data[currentId]]).then(res => {
+                        // 返回成功
+                        if (res.data.status == 0) {
+                            // 消息提示成功
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                            // 刷新表格数据
+                            this.$emit('refresh')
+                        } else {
+                            this.$message.error(res.data.message);
+                        }
+                    })
                 }).catch(() => {
                     // 消息提示失败
                     this.$message({
                         type: 'info',
-                        message: '已取消删除'
+                        message: '取消删除'
                     });
                 });
+            },
+            // 刷新数据
+            refresh() {
+                this.$emit('refresh')
             }
         },
         props: {
             deleteButton: {
                 type: Object,
                 default: {
-                    deleteInfo: {},
                     deleteButtonText: '',
                     buttonStyle: {
                         icon: ''
                     }
                 }
             },
+            data: {
+                type: Object,
+                default: {}
+            },
+            requestUrl: {
+                type: String,
+                default: ''
+            }
         }
     }
 </script>

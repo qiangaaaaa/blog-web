@@ -21,3 +21,12 @@ export function updateUser(url, data) {
         data,
     })
 }
+
+// 删除用户数据
+export function deleteUser(url, data) {
+    return request({
+        method: 'delete',
+        url,
+        data,
+    })
+}

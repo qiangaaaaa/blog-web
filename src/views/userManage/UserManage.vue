@@ -1,7 +1,7 @@
 <template>
     <div class="user-manage">
         <!-- 功能区 -->
-        <domain :selection="selection" :keys="keys"></domain>
+        <domain :selection="selection" :keys="keys" @refresh="refresh"></domain>
         <!-- 信息展示区 -->
         <data-show @rowSelected="rowSelected" :tableData="tableData" :keys="keys" @currPageChange="currPageChange" @refresh="refresh">
         </data-show>
@@ -52,7 +52,7 @@
                 this.page = currPage
             },
             refresh() {
-                console.log('刷新成功');
+                console.log('已刷新');
                 this.getUserManageData(1)
             }
         },

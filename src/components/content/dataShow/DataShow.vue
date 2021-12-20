@@ -9,7 +9,7 @@
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <data-edit-button :data="scope.row" requestUrl="casualuser/update" @refresh="refresh"></data-edit-button>
-                        <data-delete-button :deleteButton="deleteButton"></data-delete-button>
+                        <data-delete-button :data="scope.row" :deleteButton="deleteButton" requestUrl="casualuser/delete" @refresh="refresh"></data-delete-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -30,7 +30,6 @@
         data() {
             return {
                 deleteButton: {
-                    deleteInfo: {},
                     deleteButtonText: '',
                     buttonStyle: {
                         icon: 'el-icon-delete'
@@ -46,15 +45,6 @@
         mounted() {
         },
         methods: {
-            // 编辑
-            handleEdit(index, row) {
-                console.log(index, row);
-            },
-            // 删除
-            handleDelete(index, row) {
-                console.log(index, row);
-                this.open()
-            },
             // 当发生某行选中事件
             tableSelect(selection, row) {
                 // 子传父（UserManage）
@@ -67,7 +57,7 @@
             // 数据刷新
             refresh() {
                 this.$emit('refresh')
-            }
+            },
         },
         components: {
             DataEditButton,

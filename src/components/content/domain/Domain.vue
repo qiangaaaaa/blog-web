@@ -15,7 +15,7 @@
             <data-delete-button :deleteButton="deleteButton"></data-delete-button>
         </div>
         <div class="addButton">
-            <data-add-button :keys="keys.slice(1)" requestUrl="casualuser/save"></data-add-button>
+            <data-add-button :keys="keys.slice(1)" requestUrl="casualuser/save" @refresh="refresh"></data-add-button>
         </div>
     </div>
 </template>
@@ -58,6 +58,10 @@
             searchClick() {
                 this.$parent.getUserManageData(1, this.search)
             },
+            // 数据刷新
+            refresh() {
+                this.$emit('refresh')
+            }
         },
         components: {
             DataDeleteButton,
