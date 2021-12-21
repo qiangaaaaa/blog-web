@@ -9,7 +9,8 @@
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <data-edit-button :data="scope.row" requestUrl="casualuser/update" @refresh="refresh"></data-edit-button>
-                        <data-delete-button :data="scope.row" :deleteButton="deleteButton" requestUrl="casualuser/delete" @refresh="refresh"></data-delete-button>
+                        <!-- <data-delete-button :data="[scope.row[Object.keys(scope.row)[0]]]" :deleteButton="deleteButton" requestUrl="casualuser/delete" @refresh="refresh"></data-delete-button> -->
+                        <data-delete-button :data="Object.values(scope.row).slice(0,1)" :deleteButton="deleteButton" requestUrl="casualuser/delete" @refresh="refresh"></data-delete-button>
                     </template>
                 </el-table-column>
             </el-table>

@@ -12,7 +12,9 @@
             <el-button icon="el-icon-refresh-right" round @click="reset">重置</el-button>
         </div>
         <div class="space" v-if="deleteShow">
-            <data-delete-button :deleteButton="deleteButton"></data-delete-button>
+            <data-delete-button :deleteButton="deleteButton" :data="deleteData" requestUrl="casualuser/delete"
+                @refresh="refresh">
+            </data-delete-button>
         </div>
         <div class="addButton">
             <data-add-button :keys="keys.slice(1)" requestUrl="casualuser/save" @refresh="refresh"></data-add-button>
@@ -22,7 +24,7 @@
 <script>
     import DataDeleteButton from 'components/common/dataDeleteButton/DataDeleteButton'
     import DataAddButton from 'components/common/dataAddButton/DataAddButton'
-    import {searchInputDebounceMixin} from 'common/mixin'
+    import { searchInputDebounceMixin } from 'common/mixin'
 
     export default {
         name: 'Domain',
@@ -35,9 +37,17 @@
                     buttonStyle: {},
                 },
                 // 按钮是否显示
-                deleteShow: false
-                // 已选中的数据
-                // selection: []
+                deleteShow: false,
+            }
+        },
+        computed: {
+            // 删除按钮要删除的数据（仅包含id）
+            deleteData() {
+                let delData = []
+                this.selection.forEach(item => {
+                    delData.push(Object.values(item)[0])
+                });
+                return delData
             }
         },
         watch: {

@@ -38,9 +38,8 @@
                     type: 'warning',
                     center: true
                 }).then(() => {
-                    const currentId = Object.keys(this.data)[0]
                     // post请求 删除数据
-                    deleteUser(this.requestUrl, [this.data[currentId]]).then(res => {
+                    deleteUser(this.requestUrl, this.data).then(res => {
                         // 返回成功
                         if (res.data.status == 0) {
                             // 消息提示成功
@@ -78,8 +77,8 @@
                 }
             },
             data: {
-                type: Object,
-                default: {}
+                type: Array,
+                default: []
             },
             requestUrl: {
                 type: String,
