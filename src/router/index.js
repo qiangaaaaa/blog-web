@@ -2,7 +2,7 @@ import Vue from "vue";
 import VueRouter from 'vue-router';
 
 // 路由懒加载
-const UserManage = () => import('../views/userManage/UserManage');
+const casualUserManage = () => import('../views/casualUserManage/CasualUserManage');
 const Manage = () => import('../views/manage/Manage');
 
 Vue.use(VueRouter)
@@ -11,11 +11,11 @@ Vue.use(VueRouter)
 const routes = [
     {
         path: '',
-        redirect: '/userManage'
+        redirect: '/casualUserManage'
     },
     {
-        path: '/userManage',
-        component: UserManage
+        path: '/casualUserManage',
+        component: casualUserManage
     },
     {
         path: '/manage',

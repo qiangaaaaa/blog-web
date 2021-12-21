@@ -29,21 +29,13 @@
         data() {
             return {
                 isCollapse: false,
-                routePath: {
-                    userManage: {
-                        path: '/userManage'
-                    },
-                    manage: {
-                        path: '/manage',
-                    }
-                },
                 menuItem: [
                     {
-                        isHaveSon: false,
-                        path: '/userManage',
-                        name: '用户管理UserManage',
-                        icon: 'el-icon-user-solid',
-                        item: []
+                        isHaveSon: false, // 是否含子路由
+                        path: '/casualUserManage', // 路由
+                        name: '临时用户管理', // 标签名
+                        icon: 'el-icon-user-solid', // 饿了么UI图标
+                        item: [] // 子路由
                     },
                     {
                         isHaveSon: false,

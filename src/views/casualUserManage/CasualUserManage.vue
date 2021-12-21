@@ -45,7 +45,8 @@
                 getUserManageData(dataPage, dataKey).then(res => {
                     this.tableData = res.data.data
                     // 更新表头
-                    this.keys = Object.keys(this.tableData.list[0] || [])
+                    this.keys = Object.keys(this.tableData.list[0] || {})
+                    this.keys = this.keys.length === 0 ? ["casualUserId","email","nickname"] : this.keys
                 })
             },
             currPageChange(currPage) {
