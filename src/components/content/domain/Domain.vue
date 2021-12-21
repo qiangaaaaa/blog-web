@@ -70,6 +70,9 @@
             },
             // 数据刷新
             refresh() {
+                // 删除按钮不显示
+                this.deleteShow = false
+                // 子传父 刷新
                 this.$emit('refresh')
             }
         },

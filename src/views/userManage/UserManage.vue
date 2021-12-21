@@ -52,7 +52,9 @@
                 this.page = currPage
             },
             refresh() {
-                console.log('已刷新');
+                // 重置选中的数据
+                this.selection = []
+                // 重新请求第一页数据
                 this.getUserManageData(1)
             }
         },
