@@ -2,14 +2,14 @@
     <div>
         <el-button type="success" icon="el-icon-plus" round @click="show">添加</el-button>
         <el-dialog title="新增" :visible.sync="dialogFormVisible">
-            <el-form :model="addData" :rules="rules">
+            <el-form :model="addData" :rules="rules" ref="ruleForm" status-icon>
                 <el-form-item :label="item" v-for="(item,index) in keys" :key='index' :prop="item">
                     <el-input v-model="addData[item]" autocomplete="off"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="cancel">取 消</el-button>
-                <el-button type="primary" @click="addQuick">立即添加</el-button>
+                <el-button type="primary" @click="addQuick" :disabled="isAdd">立即添加</el-button>
             </div>
         </el-dialog>
     </div>
@@ -27,10 +27,12 @@
                 dialogFormVisible: false,
                 addData: {},
                 // 表单验证规则
-                rules: {}
+                rules: {},
+                isAdd: true
             }
         },
         watch: {
+            // 当表头发生变化，更新表单规则
             keys(newValue, oldValue) {
                 newValue.forEach(item => {
                     if (item === 'email') {
@@ -38,12 +40,21 @@
                             { required: true, message: '请输入邮箱地址', trigger: 'blur' },
                             { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
                         ]
-                    }else {
+                    } else {
                         this.rules[item] = [
                             { required: true, message: `请输入${item}`, trigger: 'blur' },
                         ]
                     }
                 })
+            },
+            // 监听addData 对整个表单实时验证
+            addData: {
+                handler: function (newValue, oldValue) {
+                    this.$refs.ruleForm.validate((isPass) => {
+                        this.isAdd = !isPass
+                    })
+                },
+                deep: true
             }
         },
         computed: {
