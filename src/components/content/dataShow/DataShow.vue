@@ -8,9 +8,9 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <data-edit-button :data="scope.row" requestUrl="casualuser/update" @refresh="refresh"></data-edit-button>
+                        <data-edit-button :data="scope.row" :requestUrl="editButtonRequestUrl" @refresh="refresh"></data-edit-button>
                         <!-- <data-delete-button :data="[scope.row[Object.keys(scope.row)[0]]]" :deleteButton="deleteButton" requestUrl="casualuser/delete" @refresh="refresh"></data-delete-button> -->
-                        <data-delete-button :data="Object.values(scope.row).slice(0,1)" :deleteButton="deleteButton" requestUrl="casualuser/delete" @refresh="refresh"></data-delete-button>
+                        <data-delete-button :data="Object.values(scope.row).slice(0,1)" :deleteButton="deleteButton" :requestUrl="delButtonRequestUrl" @refresh="refresh"></data-delete-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -43,7 +43,13 @@
                 totalCount: 0, // data`s totalCount
             }
         },
-        mounted() {
+        computed: {
+            delButtonRequestUrl() {
+                return this.url + '/delete'
+            },
+            editButtonRequestUrl() {
+                return this.url + '/update'
+            },
         },
         methods: {
             // 当发生某行选中事件
@@ -75,6 +81,12 @@
                 type: Array,
                 default() {
                     return []
+                }
+            },
+            url: {
+                type: String,
+                default() {
+                    return ''
                 }
             }
         },

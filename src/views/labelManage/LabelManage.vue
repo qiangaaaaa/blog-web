@@ -11,7 +11,7 @@
     import Domain from 'components/content/domain/Domain'
     import DataShow from 'components/content/dataShow/DataShow'
 
-    import { getCasualUserData } from 'network/casualUser'
+    import { getLabelData } from 'network/label'
 
     export default {
         name: 'CasualUserManage',
@@ -21,18 +21,18 @@
                 tableData: {}, // 就是接口中的data部分
                 page: 1, // 当前访问到第几页数据
                 keys: [], // 表头
-                url: 'casualuser', // 用于网络请求定位是哪个表,
+                url: 'label', // 用于网络请求定位是哪个表,
             }
         },
         created() {
             // 初始化数据
-            this.getCasualUserData()
+            this.getLabelData()
         },
         computed: {
         },
         watch: {
             page(newValue, oldValue) {
-                this.getCasualUserData()
+                this.getLabelData()
             }
         },
         methods: {
@@ -41,8 +41,8 @@
                 this.selection = selection
             },
             // 请求getCasualUserData封装
-            getCasualUserData(dataPage = this.page, dataKey = '') {
-                getCasualUserData(dataPage, dataKey).then(res => {
+            getLabelData(dataPage = this.page, dataKey = '') {
+                getLabelData(dataPage, dataKey).then(res => {
                     this.tableData = res.data.data
                     // 更新表头
                     this.keys = Object.keys(this.tableData.list[0] || {})
@@ -57,7 +57,7 @@
                 // 重置选中的数据
                 this.selection = []
                 // 重新请求第一页数据
-                this.getCasualUserData(1)
+                this.getLabelData(1)
             }
         },
         components: {

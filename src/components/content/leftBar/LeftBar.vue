@@ -39,9 +39,9 @@
                     },
                     {
                         isHaveSon: false,
-                        path: '/manage',
-                        name: '管理Manage',
-                        icon: 'el-icon-s-help',
+                        path: '/labelManage',
+                        name: '标签管理',
+                        icon: 'el-icon-price-tag',
                         item: []
                     },
                     {

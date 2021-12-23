@@ -12,12 +12,12 @@
             <el-button icon="el-icon-refresh-right" round @click="reset">重置</el-button>
         </div>
         <div class="space" v-if="deleteShow">
-            <data-delete-button :deleteButton="deleteButton" :data="deleteData" requestUrl="casualuser/delete"
+            <data-delete-button :deleteButton="deleteButton" :data="deleteData" :requestUrl="delButtonRequestUrl"
                 @refresh="refresh">
             </data-delete-button>
         </div>
         <div class="addButton">
-            <data-add-button :keys="keys.slice(1)" requestUrl="casualuser/save" @refresh="refresh"></data-add-button>
+            <data-add-button :keys="keys.slice(1)" :requestUrl="addButtonRequestUrl" @refresh="refresh"></data-add-button>
         </div>
     </div>
 </template>
@@ -48,7 +48,13 @@
                     delData.push(Object.values(item)[0])
                 });
                 return delData
-            }
+            },
+            addButtonRequestUrl() {
+                return this.url + '/save'
+            },
+            delButtonRequestUrl() {
+                return this.url + '/delete'
+            },
         },
         watch: {
             selection(newValue, oldValue) {
@@ -88,6 +94,10 @@
             selection: {
                 type: Array,
                 default: []
+            },
+            url: {
+                type: String,
+                default: ''
             }
         },
         mixins: [searchInputDebounceMixin]
