@@ -47,7 +47,7 @@
                     // 更新表头
                     this.keys = Object.keys(this.tableData.list[0] || {})
                     // 手动表头
-                    this.keys = this.keys.length === 0 ? ["casualUserId","email","nickname"] : this.keys
+                    this.keys = this.keys.length === 0 ? ["labelName","description"] : this.keys
                 })
             },
             currPageChange(currPage) {

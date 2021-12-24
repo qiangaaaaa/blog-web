@@ -4,6 +4,7 @@ import VueRouter from 'vue-router';
 // 路由懒加载
 const CasualUserManage = () => import('../views/casualUserManage/CasualUserManage');
 const LabelManage = () => import('../views/labelManage/LabelManage');
+const ArticleManage = () => import('../views/articleManage/ArticleManage');
 
 Vue.use(VueRouter)
 
@@ -20,6 +21,10 @@ const routes = [
     {
         path: '/labelManage',
         component: LabelManage
+    },
+    {
+        path: '/articleManage',
+        component: ArticleManage
     }
 ]
 

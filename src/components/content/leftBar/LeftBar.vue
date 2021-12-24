@@ -45,6 +45,13 @@
                         item: []
                     },
                     {
+                        isHaveSon: false,
+                        path: '/articleManage',
+                        name: '文章管理',
+                        icon: 'el-icon-s-management',
+                        item: []
+                    },
+                    {
                         isHaveSon: true,
                         path: '/son1',
                         name: '父级菜单测试',
