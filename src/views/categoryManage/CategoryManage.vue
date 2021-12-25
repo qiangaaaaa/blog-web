@@ -136,24 +136,23 @@
                 console.log(draggingNode);
                 console.log('准备进入的节点:', dropNode.data.label);
                 console.log(dropNode);
+                console.log('插入节点：',type);
                 const draggingNodeDepth = getMaxDepth(draggingNode)
                 const dropNodeDepth = getMaxDepth(dropNode)
                 console.log('被拖拽的节点 最大深度：', draggingNodeDepth);
                 console.log('准备进入的节点 最大深度：', dropNodeDepth);
                 const maxDepth = Math.max(dropNodeDepth, draggingNodeDepth)
-                if ((maxDepth + dropNode.level) > 3) {
-                    console.log('已修改为不可拖拽');
-                    console.log('-----------------------------');
-                    return false
+                const sum = maxDepth + dropNode.level
+                if(type === "inner") {
+                    if( sum > 3) {
+                        return false
+                    }
+                }else {
+                    if( ( sum -1 ) > 3 ) {
+                        return false
+                    }
                 }
-
                 return true
-
-                // if (dropNode.data.label === '二级 3-1') {
-                //     return type !== 'inner';
-                // } else {
-                //     return true;
-                // }
             },
             allowDrag(draggingNode) {
                 return draggingNode.data.label.indexOf('三级 3-2-2') === -1;
