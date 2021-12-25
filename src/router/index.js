@@ -5,6 +5,7 @@ import VueRouter from 'vue-router';
 const CasualUserManage = () => import('../views/casualUserManage/CasualUserManage');
 const LabelManage = () => import('../views/labelManage/LabelManage');
 const ArticleManage = () => import('../views/articleManage/ArticleManage');
+const CategoryManage = () => import('../views/categoryManage/CategoryManage');
 
 Vue.use(VueRouter)
 
@@ -25,6 +26,10 @@ const routes = [
     {
         path: '/articleManage',
         component: ArticleManage
+    },
+    {
+        path: '/categoryManage',
+        component: CategoryManage
     }
 ]
 

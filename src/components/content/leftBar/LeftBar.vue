@@ -52,6 +52,13 @@
                         item: []
                     },
                     {
+                        isHaveSon: false,
+                        path: '/categoryManage',
+                        name: '分类管理',
+                        icon: 'el-icon-s-order',
+                        item: []
+                    },
+                    {
                         isHaveSon: true,
                         path: '/son1',
                         name: '父级菜单测试',
