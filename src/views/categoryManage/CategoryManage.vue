@@ -2,10 +2,11 @@
     <div class="block">
         <p>使用 scoped slot</p>
         <el-button type="primary" @click="rootAppend">添加根结点</el-button>
+        <el-button type="primary" @click="allExpand">全部展开</el-button>
         <el-tree :data="data" default-expand-all @node-drag-start="handleDragStart" @node-drag-enter="handleDragEnter"
             @node-drag-leave="handleDragLeave" @node-drag-over="handleDragOver" @node-drag-end="handleDragEnd"
             @node-drop="handleDrop" draggable :allow-drop="allowDrop" :allow-drag="allowDrag"
-            :expand-on-click-node="false">
+            :expand-on-click-node="false" ref="tree">
             <span class="custom-tree-node" slot-scope="{ node, data }">
                 <span>{{ node.label }}</span>
                 <span>
@@ -18,7 +19,7 @@
                 </span>
             </span>
         </el-tree>
-        {{data}}
+        <!-- {{data}} -->
     </div>
 </template>
 <script>
@@ -54,7 +55,8 @@
             }];
             return {
                 data: JSON.parse(JSON.stringify(data)),
-                nodeMaxDepth: 2
+                nodeMaxDepth: 2,
+                isAllExpand: false
             }
         },
         created() {
@@ -62,6 +64,13 @@
         computed: {
         },
         methods: {
+            // 是否展开
+            allExpand() {
+                this.$refs.tree.$children.forEach( item => {
+                    item.expanded = this.isAllExpand
+                })
+                this.isAllExpand = !this.isAllExpand
+            },
             rootAppend() {
                 const newChild = {
                     id: id++,
