@@ -9,7 +9,7 @@
             <span class="custom-tree-node" slot-scope="{ node, data }">
                 <span>{{ node.label }}</span>
                 <span>
-                    <el-button type="text" size="mini" @click="() => append(data)">
+                    <el-button type="text" size="mini" @click="() => append(node,data)">
                         Append
                     </el-button>
                     <el-button type="text" size="mini" @click="() => remove(node, data)">
@@ -54,6 +54,7 @@
             }];
             return {
                 data: JSON.parse(JSON.stringify(data)),
+                nodeMaxDepth: 2
             }
         },
         created() {
@@ -61,20 +62,7 @@
         computed: {
         },
         methods: {
-            // jiShu(node) {
-            //     if(!node) {
-            //         return 0
-            //     }
-            //     let maxDepth = 0
-            //     const childNodes = node.childNodes
-            //     for(const childNode of childNodes) {
-            //         const childNodeMaxDepth = this.$options.methods.jiShu(childNode)
-            //         maxDepth = Math.max(maxDepth,childNodeMaxDepth)
-            //     }
-            //     return maxDepth + 1
-            // },
             rootAppend() {
-                console.log(this.data);
                 const newChild = {
                     id: id++,
                     label: 'testtest',
@@ -82,13 +70,19 @@
                 }
                 this.data.push(newChild)
             },
-            append(data) {
-                console.log(data);
-                const newChild = { id: id++, label: 'testtest', children: [] };
-                if (!data.children) {
-                    this.$set(data, 'children', []);
+            append(node, data) {
+                if (node.level >= this.nodeMaxDepth) {
+                    // 超过最大深度
+                    console.log("添加失败");
+                } else {
+                    // 未超过最大深度
+                    const newChild = { id: id++, label: 'testtest', children: [] };
+                    if (!data.children) {
+                        this.$set(data, 'children', []);
+                    }
+                    data.children.push(newChild);
                 }
-                data.children.push(newChild);
+
             },
 
             remove(node, data) {
@@ -104,12 +98,6 @@
                 // console.log('drag start', node);
             },
             handleDragEnter(draggingNode, dropNode, ev) {
-                // if(dropNode.level >= 3) {
-                //     console.log('求怕累');
-                // }
-
-                // console.log(dropNode);
-                // console.log(ev);
                 // console.log('tree drag enter: ', dropNode.label);
             },
             handleDragLeave(draggingNode, dropNode, ev) {
@@ -119,36 +107,23 @@
                 // console.log('tree drag over: ', dropNode.label);
             },
             handleDragEnd(draggingNode, dropNode, dropType, ev) {
-                console.log(ev);
-
-                // this.canDraggable = true
-                // console.log('已修改为可拖拽');
                 // console.log('tree drag end: ', dropNode && dropNode.label, dropType);
             },
             handleDrop(draggingNode, dropNode, dropType, ev) {
                 // console.log('tree drop: ', dropNode.label, dropType);
-                // this.canDraggable = true
-                // console.log('已修改为可拖拽');
             },
             allowDrop(draggingNode, dropNode, type) {
-                console.log('-----------------------------');
-                console.log('被拖拽的节点：', draggingNode.data.label);
-                console.log(draggingNode);
-                console.log('准备进入的节点:', dropNode.data.label);
-                console.log(dropNode);
-                console.log('插入节点：',type);
                 const draggingNodeDepth = getMaxDepth(draggingNode)
                 const dropNodeDepth = getMaxDepth(dropNode)
-                console.log('被拖拽的节点 最大深度：', draggingNodeDepth);
-                console.log('准备进入的节点 最大深度：', dropNodeDepth);
                 const maxDepth = Math.max(dropNodeDepth, draggingNodeDepth)
                 const sum = maxDepth + dropNode.level
-                if(type === "inner") {
-                    if( sum > 3) {
+                // 限制最大深度为nodeMaxDepth
+                if (type === "inner") {
+                    if (sum > this.nodeMaxDepth) {
                         return false
                     }
-                }else {
-                    if( ( sum -1 ) > 3 ) {
+                } else {
+                    if ((sum - 1) > this.nodeMaxDepth) {
                         return false
                     }
                 }
