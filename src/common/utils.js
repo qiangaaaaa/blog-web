@@ -30,6 +30,27 @@ function debounce(fn, delay = 1000) {
 }
 
 /**
+ * 节流函数
+ * @param {string} fn 准备执行的函数
+ * @param {Number} delay 冷却时间
+ * @returns 
+ */
+function throttle(fn, delay = 1500) {
+    let timer = null
+     
+    return function (...args) {
+        if(timer) {
+            return
+        }
+        timer = setTimeout(() => {
+            fn.apply(this, args)
+            timer = null
+        }, delay)
+    }
+}
+
+
+/**
  * 获取N树最大深度
  * @param {Object} node 树形节点
  * @returns 
@@ -50,5 +71,6 @@ function getMaxDepth(node) {
 export {
     debounce,
     clearData,
-    getMaxDepth
+    getMaxDepth,
+    throttle
 }

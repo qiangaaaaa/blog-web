@@ -15,10 +15,12 @@
                 </span>
             </div>
         </el-tree>
+
+        </el-alert>
     </div>
 </template>
 <script>
-    import { getMaxDepth } from 'common/utils'
+    import { getMaxDepth, throttle } from 'common/utils'
     import { getCategory } from 'network/category'
 
     let id = 1000;
@@ -28,10 +30,12 @@
             return {
                 data: [],
                 nodeMaxDepth: 2, // 树形节点最大深度
-                isAllExpand: false // 是否全部展开
+                isAllExpand: false, // 是否全部展开
+                errorMessageAlert: null
             }
         },
         created() {
+            // 从数据库中读取数据
             getCategory().then(res => {
                 // 数据清洗
                 this.data = res.data.data.map(item => {
@@ -52,6 +56,11 @@
                         children,
                     }
                 })
+            })
+            // 初始化错误提示节流函数
+            this.errorMessageAlert = throttle(() => {
+                // 超过最大深度
+                this.$message.error(`添加失败！标签树最大级数为${this.nodeMaxDepth}级`);
             })
         },
         computed: {
@@ -75,7 +84,7 @@
             append(node, data) {
                 if (node.level >= this.nodeMaxDepth) {
                     // 超过最大深度
-                    console.log("添加失败");
+                    this.$message.error(`添加失败！标签树最大级数为${this.nodeMaxDepth}级`);
                 } else {
                     // 未超过最大深度
                     const newChild = { id: id++, categoryName: 'testtest', children: [] };
@@ -122,6 +131,7 @@
                 // 限制最大深度为nodeMaxDepth
                 if (type === "inner") {
                     if (sum > this.nodeMaxDepth) {
+                        this.errorMessageAlert()
                         return false
                     }
                 } else {
