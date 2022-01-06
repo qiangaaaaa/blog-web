@@ -1,11 +1,11 @@
 <template>
     <div class="block">
-        <el-button type="primary" plain icon="el-icon-folder-add" @click="rootAppend">添加根结点</el-button>
+        <el-button type="primary" plain icon="el-icon-folder-add" @click="rootAppend">添加根标签</el-button>
         <el-button type="primary" plain icon="el-icon-s-operation" @click="allExpand">全部展开</el-button>
         <el-tree :data="data" default-expand-all @node-drag-start="handleDragStart" @node-drag-enter="handleDragEnter"
             @node-drag-leave="handleDragLeave" @node-drag-over="handleDragOver" @node-drag-end="handleDragEnd"
-            @node-drop="handleDrop" draggable :allow-drop="allowDrop" :allow-drag="allowDrag"
-            :expand-on-click-node="false" ref="tree" class="categoryTree">
+            @node-drop="handleDrop" draggable :allow-drop="allowDrop" :expand-on-click-node="false" ref="tree"
+            class="categoryTree">
             <div class="custom-tree-node" slot-scope="{ node, data }">
                 <span>{{ data.categoryName }}</span>
                 <span>
@@ -131,9 +131,6 @@
                 }
                 return true
             },
-            allowDrag(draggingNode) {
-                return draggingNode.data.label.indexOf('三级 3-2-2') === -1;
-            }
         },
     }
 </script>
