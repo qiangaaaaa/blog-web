@@ -6,8 +6,8 @@
         <el-tree :data="data" default-expand-all @node-drag-start="handleDragStart" @node-drag-enter="handleDragEnter"
             @node-drag-leave="handleDragLeave" @node-drag-over="handleDragOver" @node-drag-end="handleDragEnd"
             @node-drop="handleDrop" draggable :allow-drop="allowDrop" :allow-drag="allowDrag"
-            :expand-on-click-node="false" ref="tree">
-            <span class="custom-tree-node" slot-scope="{ node, data }">
+            :expand-on-click-node="false" ref="tree" class="categoryTree">
+            <div class="custom-tree-node" slot-scope="{ node, data }">
                 <span>{{ node.label }}</span>
                 <span>
                     <el-button type="text" size="mini" @click="() => append(node,data)">
@@ -17,9 +17,19 @@
                         Delete
                     </el-button>
                 </span>
-            </span>
+            </div>
         </el-tree>
-        <!-- {{data}} -->
+
+        <!-- <template>
+            <el-table :data="tableData" style="width: 100%">
+                <el-table-column prop="date" label="日期" width="180">
+                </el-table-column>
+                <el-table-column prop="name" label="姓名" width="180">
+                </el-table-column>
+                <el-table-column prop="address" label="地址">
+                </el-table-column>
+            </el-table>
+        </template> -->
     </div>
 </template>
 <script>
@@ -55,8 +65,8 @@
             }];
             return {
                 data: JSON.parse(JSON.stringify(data)),
-                nodeMaxDepth: 2,
-                isAllExpand: false
+                nodeMaxDepth: 2, // 树形节点最大深度
+                isAllExpand: false // 是否全部展开
             }
         },
         created() {
@@ -66,7 +76,7 @@
         methods: {
             // 是否展开
             allExpand() {
-                this.$refs.tree.$children.forEach( item => {
+                this.$refs.tree.$children.forEach(item => {
                     item.expanded = this.isAllExpand
                 })
                 this.isAllExpand = !this.isAllExpand
@@ -145,5 +155,8 @@
     }
 </script>
 <style scoped>
-
+    /* 修改树形控件基础样式 */
+    .block>>>.el-tree-node__content {
+        height: 60px !important;
+    }
 </style>
