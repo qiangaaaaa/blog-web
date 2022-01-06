@@ -7,7 +7,7 @@
             @node-drop="handleDrop" draggable :allow-drop="allowDrop" :allow-drag="allowDrag"
             :expand-on-click-node="false" ref="tree" class="categoryTree">
             <div class="custom-tree-node" slot-scope="{ node, data }">
-                <span>{{ node.label }}</span>
+                <span>{{ data.categoryName }}</span>
                 <span>
                     <i class="el-icon-circle-plus-outline categoryButton" @click="() => append(node,data)">添加</i>
                     <i class="el-icon-remove-outline categoryButton" @click="() => remove(node, data)">删除</i>
@@ -19,42 +19,40 @@
 </template>
 <script>
     import { getMaxDepth } from 'common/utils'
+    import { getCategory } from 'network/category'
+
     let id = 1000;
     export default {
         name: 'CategoryManage',
         data() {
-            const data = [{
-                id: 1,
-                label: '一级 1',
-                children: []
-            }, {
-                id: 2,
-                label: '一级 2',
-                children: [{
-                    id: 5,
-                    label: '二级 2-1'
-                }, {
-                    id: 6,
-                    label: '二级 2-2'
-                }]
-            }, {
-                id: 3,
-                label: '一级 3',
-                children: [{
-                    id: 7,
-                    label: '二级 3-1'
-                }, {
-                    id: 8,
-                    label: '二级 3-2'
-                }]
-            }];
             return {
-                data: JSON.parse(JSON.stringify(data)),
+                data: [],
                 nodeMaxDepth: 2, // 树形节点最大深度
                 isAllExpand: false // 是否全部展开
             }
         },
         created() {
+            getCategory().then(res => {
+                // 数据清洗
+                this.data = res.data.data.map(item => {
+                    let children = item.subCategory
+                    children = children.map(item2 => {
+                        return {
+                            categoryId: item2.categoryId,
+                            categoryName: item2.categoryName,
+                            sort: item2.sort,
+                            parentCategoryId: item2.parentCategoryId,
+                        }
+                    })
+                    return {
+                        categoryId: item.categoryId,
+                        categoryName: item.categoryName,
+                        sort: item.sort,
+                        parentCategoryId: item.parentCategoryId,
+                        children,
+                    }
+                })
+            })
         },
         computed: {
         },
@@ -69,7 +67,7 @@
             rootAppend() {
                 const newChild = {
                     id: id++,
-                    label: 'testtest',
+                    categoryName: 'testtest',
                     children: []
                 }
                 this.data.push(newChild)
@@ -80,7 +78,7 @@
                     console.log("添加失败");
                 } else {
                     // 未超过最大深度
-                    const newChild = { id: id++, label: 'testtest', children: [] };
+                    const newChild = { id: id++, categoryName: 'testtest', children: [] };
                     if (!data.children) {
                         this.$set(data, 'children', []);
                     }
