@@ -16,9 +16,12 @@
             </div>
         </el-tree>
         </el-alert>
-    </div>
+        <CategoryAddAndEditDialog dialogType="" requestUrl="" key="" dialogVisible="true"></CategoryAddAndEditDialog>
+    </div> 
 </template>
 <script>
+    import CategoryAddAndEditDialog from 'components/content/category/categoryAddAndEditDialog/CategoryAddAndEditDialog'
+
     import { getMaxDepth, throttle } from 'common/utils'
     import { getCategory } from 'network/category'
 
@@ -61,8 +64,6 @@
                 // 超过最大深度
                 this.$message.error(`添加失败！标签树最大级数为${this.nodeMaxDepth}级`);
             })
-        },
-        computed: {
         },
         methods: {
             // 是否展开
@@ -141,6 +142,9 @@
                 return true
             },
         },
+        components: {
+            CategoryAddAndEditDialog
+        }
     }
 </script>
 <style scoped>
