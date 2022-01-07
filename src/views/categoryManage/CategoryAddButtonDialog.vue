@@ -37,6 +37,8 @@
     </div>
 </template>
 <script>
+    import { addCategory } from 'network/category'
+
     // 分类管理-添加按钮模态框
     export default {
         name: 'CategoryAddButtonDialog',
@@ -89,6 +91,10 @@
             },
             // 提交按钮点击事件
             submit() {
+                addCategory(this.ruleForm).then(res => {
+                    console.log(res);
+                })
+
                 this.$options.methods.addButtonDialogClose(this)
                 this.isDialogVisible = false
             },
