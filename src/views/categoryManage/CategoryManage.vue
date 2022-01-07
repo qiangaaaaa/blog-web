@@ -12,7 +12,7 @@
                     <i class="el-icon-circle-plus-outline categoryButton" @click="() => append(node,data)">添加</i>
                     <i class="el-icon-remove-outline categoryButton" @click="() => remove(node, data)">删除</i>
                     <i class="el-icon-zoom-in categoryButton">编辑</i>
-                </span>
+                </span>  
             </div>
         </el-tree>
         </el-alert>
@@ -20,7 +20,7 @@
     </div> 
 </template>
 <script>
-    import CategoryAddAndEditDialog from 'components/content/category/categoryAddAndEditDialog/CategoryAddAndEditDialog'
+    import CategoryAddAndEditDialog from './CategoryAddAndEditDialog'
 
     import { getMaxDepth, throttle } from 'common/utils'
     import { getCategory } from 'network/category'

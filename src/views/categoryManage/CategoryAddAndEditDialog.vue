@@ -10,6 +10,7 @@
     </div>
 </template>
 <script>
+    // 分类管理-添加和编辑按钮模态框
     export default {
         name: 'CategoryAddAndEditDialog',
         data() {
