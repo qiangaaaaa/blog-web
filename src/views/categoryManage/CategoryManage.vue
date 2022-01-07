@@ -16,11 +16,11 @@
             </div>
         </el-tree>
         </el-alert>
-        <CategoryAddAndEditDialog dialogType="" requestUrl="" key="" dialogVisible="true"></CategoryAddAndEditDialog>
+        <CategoryAddButtonDialog :parentCategoryId="addCategoryParentId" :dialogVisible="addButtonDialogVisible" @addButtonDialogClose="addButtonDialogClose"></CategoryAddButtonDialog>
     </div> 
 </template>
 <script>
-    import CategoryAddAndEditDialog from './CategoryAddAndEditDialog'
+    import CategoryAddButtonDialog from './CategoryAddButtonDialog'
 
     import { getMaxDepth, throttle } from 'common/utils'
     import { getCategory } from 'network/category'
@@ -33,7 +33,9 @@
                 data: [],
                 nodeMaxDepth: 2, // 树形节点最大深度
                 isAllExpand: false, // 是否全部展开
-                errorMessageAlert: null
+                errorMessageAlert: null,
+                addButtonDialogVisible: false, // 是否显示添加按钮对话框
+                addCategoryParentId: 0, // 添加按钮传给对话框的父标签id
             }
         },
         created() {
@@ -73,6 +75,7 @@
                 })
                 this.isAllExpand = !this.isAllExpand
             },
+            // 添加根标签
             rootAppend() {
                 const newChild = {
                     id: id++,
@@ -80,7 +83,11 @@
                     children: []
                 }
                 this.data.push(newChild)
+                // 初始化
+                this.addCategoryParentId = 0
+                this.addButtonDialogVisible = true
             },
+            // 添加子标签
             append(node, data) {
                 if (node.level >= this.nodeMaxDepth) {
                     // 超过最大深度
@@ -92,10 +99,15 @@
                         this.$set(data, 'children', []);
                     }
                     data.children.push(newChild);
+                    // 初始化值
+                    this.addCategoryParentId = data.categoryId
+                    this.addButtonDialogVisible = true
                 }
-
             },
-
+            // 修改addButtonDialogVisible状态
+            addButtonDialogClose() {
+                this.addButtonDialogVisible = false
+            },
             remove(node, data) {
                 console.log(data);
                 console.log(node);
@@ -143,7 +155,7 @@
             },
         },
         components: {
-            CategoryAddAndEditDialog
+            CategoryAddButtonDialog
         }
     }
 </script>
