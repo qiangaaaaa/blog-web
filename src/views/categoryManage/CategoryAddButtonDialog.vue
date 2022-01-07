@@ -30,7 +30,7 @@
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="cancel">取 消</el-button>
-                <el-button type="primary" @click="submit">提 交</el-button>
+                <el-button type="primary" @click="submit" :disabled="isSubmit">提 交</el-button>
             </span>
         </el-dialog>
         {{ruleForm}}
@@ -59,7 +59,8 @@
                         { required: true, message: '请选择是否显示', trigger: 'change' }
                     ],
                 },
-                isDialogVisible: false
+                isDialogVisible: false,
+                isSubmit: true // 是否可以提交（需通过校验）
             }
         },
         methods: {
@@ -90,7 +91,7 @@
             submit() {
                 this.$options.methods.addButtonDialogClose(this)
                 this.isDialogVisible = false
-            }
+            },
         },
         watch: {
             // 更新父标签id
@@ -100,6 +101,15 @@
             // 更新对话框状态
             dialogVisible(newValue) {
                 this.isDialogVisible = newValue
+            },
+            // 表单实时校验
+            ruleForm: {
+                handler: function (newValue, oldValue) {
+                    this.$refs.ruleForm.validate((isPass) => {
+                        this.isSubmit = !isPass
+                    })
+                },
+                deep: true
             }
         },
         props: {
@@ -107,7 +117,7 @@
             parentCategoryId: {
                 type: Number,
                 default() {
-                    return 999
+                    return 0
                 }
             },
             // 对话框是否显示
