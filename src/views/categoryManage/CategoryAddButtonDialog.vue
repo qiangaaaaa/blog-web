@@ -28,6 +28,7 @@
                     </el-radio-group>
                 </el-form-item>
             </el-form>
+            {{ruleForm}}
             <span slot="footer" class="dialog-footer">
                 <el-button @click="cancel">取 消</el-button>
                 <el-button type="primary" @click="submit" :disabled="isSubmit">提 交</el-button>
@@ -79,9 +80,12 @@
             selectBlur(e) {
                 this.ruleForm.iconUrl = e.target.value
             },
-            // 告诉CategoryManage.vue本模态框已关闭
+            // 对话框关闭
             addButtonDialogClose(_this) {
+                // 告诉父组件已关闭
                 _this.$emit('addButtonDialogClose')
+                // 清空本组件所有数据
+                _this.clearData()
             },
             // 取消按钮点击事件
             cancel() {
@@ -97,6 +101,15 @@
                 this.$options.methods.addButtonDialogClose(this)
                 this.isDialogVisible = false
             },
+            // 清空数据
+            clearData() {
+                for(const item in this.ruleForm) {
+                    if(item === 'parentCategoryId') {
+                        continue
+                    }
+                    this.ruleForm[item] = ''
+                }
+            }
         },
         watch: {
             // 更新父标签id
