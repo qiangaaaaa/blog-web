@@ -3,7 +3,7 @@
         <el-dialog title="添加分类" :visible.sync="isDialogVisible" width="30%" :before-close="handleClose">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
                 <el-form-item label="父分类id">
-                    <el-input v-model="ruleForm.parentCategoryId" disabled></el-input>
+                    <el-input v-model="parentCategoryId" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="分类名" prop="categoryName">
                     <el-input v-model="ruleForm.categoryName"></el-input>
@@ -45,7 +45,6 @@
             return {
                 // 表单数据
                 ruleForm: {
-                    parentCategoryId: 0,
                     categoryName: '',
                     iconUrl: '',
                     sort: '',
@@ -61,7 +60,7 @@
                     ],
                 },
                 isDialogVisible: false,
-                isSubmit: true // 是否可以提交（需通过校验）
+                isSubmit: true, // 是否可以提交（需通过校验）
             }
         },
         methods: {
@@ -93,11 +92,14 @@
             },
             // 提交按钮点击事件
             submit() {
-                addCategory(this.ruleForm).then(res => {
+                const postData = Object.assign({}, this.ruleForm, {parentCategoryId: this.parentCategoryId})
+                console.log(postData);
+                console.log(this.parentCategoryId);
+                addCategory(postData).then(res => {
                     if (res.data.status === 0) {
                         // 操作成功
                         this.$message({
-                            message: '添加根组件成功',
+                            message: '添加标签成功',
                             type: 'success'
                         });
                     } else {
@@ -114,18 +116,11 @@
             // 清空数据
             clearData() {
                 for (const item in this.ruleForm) {
-                    if (item === 'parentCategoryId') {
-                        continue
-                    }
                     this.ruleForm[item] = ''
                 }
             }
         },
         watch: {
-            // 更新父标签id
-            parentCategoryId(newValue) {
-                this.ruleForm.parentCategoryId = newValue
-            },
             // 更新对话框状态
             dialogVisible(newValue) {
                 this.isDialogVisible = newValue

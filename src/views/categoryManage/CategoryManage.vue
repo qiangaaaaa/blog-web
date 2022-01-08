@@ -69,12 +69,6 @@
                     // 超过最大深度
                     this.$message.error(`添加失败！标签树最大级数为${this.nodeMaxDepth}级`);
                 } else {
-                    // 未超过最大深度
-                    const newChild = { id: id++, categoryName: 'testtest', children: [] };
-                    if (!data.children) {
-                        this.$set(data, 'children', []);
-                    }
-                    data.children.push(newChild);
                     // 初始化值
                     this.addCategoryParentId = data.categoryId
                     this.addButtonDialogVisible = true
@@ -110,7 +104,7 @@
             },
             // 页面刷新
             refresh() {
-                console.log('刷新');
+                console.log("刷新");
                 this.getCategory()
             },
             remove(node, data) {
