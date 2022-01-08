@@ -94,16 +94,27 @@
             // 提交按钮点击事件
             submit() {
                 addCategory(this.ruleForm).then(res => {
-                    console.log(res);
+                    if (res.data.status === 0) {
+                        // 操作成功
+                        this.$message({
+                            message: '添加根组件成功',
+                            type: 'success'
+                        });
+                    } else {
+                        // 操作失败
+                        this.$message.error(res.data.message)
+                    }
                 })
-
-                this.$options.methods.addButtonDialogClose(this)
+                // 告诉父组件需要刷新
+                this.$emit('refresh')
+                // 关闭对话框
                 this.isDialogVisible = false
+                this.$options.methods.addButtonDialogClose(this)
             },
             // 清空数据
             clearData() {
-                for(const item in this.ruleForm) {
-                    if(item === 'parentCategoryId') {
+                for (const item in this.ruleForm) {
+                    if (item === 'parentCategoryId') {
                         continue
                     }
                     this.ruleForm[item] = ''

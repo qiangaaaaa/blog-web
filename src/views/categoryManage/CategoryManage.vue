@@ -17,7 +17,7 @@
         </el-tree>
         </el-alert>
         <CategoryAddButtonDialog :parentCategoryId="addCategoryParentId" :dialogVisible="addButtonDialogVisible"
-            @addButtonDialogClose="addButtonDialogClose"></CategoryAddButtonDialog>
+            @addButtonDialogClose="addButtonDialogClose" @refresh="refresh"></CategoryAddButtonDialog>
     </div>
 </template>
 <script>
@@ -80,7 +80,7 @@
                     this.addButtonDialogVisible = true
                 }
             },
-            // 修改addButtonDialogVisible状态
+            // 添加按钮对话框已关闭
             addButtonDialogClose() {
                 this.addButtonDialogVisible = false
             },
@@ -110,7 +110,8 @@
             },
             // 页面刷新
             refresh() {
-                this.$options.methods.getCategory()
+                console.log('刷新');
+                this.getCategory()
             },
             remove(node, data) {
                 console.log(data);
