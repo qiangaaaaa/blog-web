@@ -1,15 +1,20 @@
 <template>
     <div class="category-add-button-dialog">
-        <el-dialog title="添加分类" :visible.sync="isDialogVisible" width="30%" :before-close="handleClose">
+        <el-dialog title="添加或编辑分类" :visible.sync="isDialogVisible" width="30%" :before-close="handleClose">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
-                <el-form-item label="父分类id">
+                <!-- 添加按钮独特 -->
+                <el-form-item label="父分类id" v-if="isAdd">
                     <el-input v-model="parentCategoryId" disabled></el-input>
+                </el-form-item>
+                <!-- 编辑按钮独特 -->
+                <el-form-item label="分类id" v-if="!isAdd">
+                    <el-input v-model="formData.categoryId" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="分类名" prop="categoryName">
                     <el-input v-model="ruleForm.categoryName"></el-input>
                 </el-form-item>
                 <el-form-item label="分类图标地址" prop="iconUrl">
-                    <el-select v-model="ruleForm.iconUrl" filterable placeholder="请选择分类图标地址" @blur="selectBlur">
+                    <el-select v-model="ruleForm.iconUrl" filterable placeholder="可选择分类图标地址" @blur="selectBlur">
                         <el-option value=" el-icon-delete">
                             <i class="el-icon-delete">el-icon-delete</i>
                         </el-option>
@@ -32,11 +37,12 @@
                 <el-button @click="cancel">取 消</el-button>
                 <el-button type="primary" @click="submit" :disabled="isSubmit">提 交</el-button>
             </span>
+            {{ruleForm}}
         </el-dialog>
     </div>
 </template>
 <script>
-    import { addCategory } from 'network/category'
+    import { addCategory, updateCategory } from 'network/category'
 
     // 分类管理-添加按钮模态框
     export default {
@@ -63,7 +69,35 @@
                 isSubmit: true, // 是否可以提交（需通过校验）
             }
         },
+        computed: {
+            // 当前功能是否是添加功能
+            isAdd() {
+                return this.dialogType === '添加'
+            }
+        },
         methods: {
+            // 数据添加or更新
+            categoryAddOrUpdate(postData) {
+                console.log(postData);
+                let fn = null
+                if(this.isAdd) {
+                    fn = addCategory
+                }else {
+                    fn = updateCategory
+                }
+                fn(postData).then(res => {
+                    if (res.data.status === 0) {
+                        // 操作成功
+                        this.$message({
+                            message: `${this.dialogType}标签成功`,
+                            type: 'success'
+                        });
+                    } else {
+                        // 操作失败
+                        this.$message.error(res.data.message)
+                    }
+                })
+            },
             // 鼠标移出对话框外并发生点击事件
             handleClose(done) {
                 const _this = this
@@ -71,6 +105,10 @@
                     .then(_ => {
                         done();
                         this.$options.methods.addButtonDialogClose(_this)
+                        this.$message({
+                            type: 'info',
+                            message: `已取消${this.dialogType}分类。`
+                        });
                     })
                     .catch(_ => { });
             },
@@ -89,22 +127,21 @@
             cancel() {
                 this.$options.methods.addButtonDialogClose(this)
                 this.isDialogVisible = false
+                this.$message({
+                    type: 'info',
+                    message: `已取消${this.dialogType}分类。`
+                });
             },
             // 提交按钮点击事件
             submit() {
-                const postData = Object.assign({}, this.ruleForm, {parentCategoryId: this.parentCategoryId})
-                addCategory(postData).then(res => {
-                    if (res.data.status === 0) {
-                        // 操作成功
-                        this.$message({
-                            message: '添加标签成功',
-                            type: 'success'
-                        });
-                    } else {
-                        // 操作失败
-                        this.$message.error(res.data.message)
-                    }
-                })
+                let postData = {}
+                if (this.isAdd) {
+                    postData = Object.assign({}, this.ruleForm, { parentCategoryId: this.parentCategoryId })
+                } else {
+                    postData = Object.assign({}, this.ruleForm, { categoryId: this.formData.categoryId })
+                }
+                // 添加或更新数据
+                this.categoryAddOrUpdate(postData)
                 // 告诉父组件需要刷新
                 this.$emit('refresh')
                 // 关闭对话框
@@ -126,11 +163,22 @@
             // 表单实时校验
             ruleForm: {
                 handler: function (newValue, oldValue) {
-                    this.$refs.ruleForm.validate((isPass) => {
-                        this.isSubmit = !isPass
-                    })
+                    if (this.isAdd) {
+                        this.$refs.ruleForm.validate((isPass) => {
+                            this.isSubmit = !isPass
+                        })
+                    }else {
+                        this.isSubmit = false
+                    }
                 },
                 deep: true
+            },
+            // 将数据放入ruleForm中
+            formData(newValue) {
+                this.ruleForm.categoryName = newValue.categoryName || ''
+                this.ruleForm.iconUrl = newValue.iconUrl || ''
+                this.ruleForm.sort = newValue.sort || ''
+                this.ruleForm.showStatus = newValue.showStatus || ''
             }
         },
         props: {
@@ -144,6 +192,22 @@
             // 对话框是否显示
             dialogVisible: {
                 type: Boolean,
+            },
+            // 对话框类型（添加还是修改？）
+            dialogType: {
+                type: String,
+                default() {
+                    return '添加'
+                }
+            },
+            // 传输的数据
+            formData: {
+                type: Object,
+                default() {
+                    return {
+                        categoryId: 0,
+                    }
+                }
             }
         }
     }

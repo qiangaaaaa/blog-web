@@ -11,13 +11,14 @@
                 <span>
                     <i class="el-icon-circle-plus-outline categoryButton" @click="() => append(node,data)">添加</i>
                     <i class="el-icon-remove-outline categoryButton" @click="() => remove(node, data)">删除</i>
-                    <i class="el-icon-zoom-in categoryButton">编辑</i>
+                    <i class="el-icon-zoom-in categoryButton" @click="() => edit(node, data)">编辑</i>
                 </span>
             </div>
         </el-tree>
         </el-alert>
-        <CategoryAddButtonDialog :parentCategoryId="addCategoryParentId" :dialogVisible="addButtonDialogVisible"
-            @addButtonDialogClose="addButtonDialogClose" @refresh="refresh"></CategoryAddButtonDialog>
+        <CategoryAddButtonDialog :parentCategoryId="addCategoryParentId" :formData="formData" :dialogType="dialogType"
+            :dialogVisible="addButtonDialogVisible" @addButtonDialogClose="addButtonDialogClose" @refresh="refresh">
+        </CategoryAddButtonDialog>
     </div>
 </template>
 <script>
@@ -36,7 +37,11 @@
                 isAllExpand: false, // 是否全部展开
                 errorMessageAlert: null,
                 addButtonDialogVisible: false, // 是否显示添加按钮对话框
-                addCategoryParentId: 0, // 添加按钮传给对话框的父标签id
+                addCategoryParentId: 0, // 添加按钮传给对话框的父标签id,
+                dialogType: '添加', // 对话框类型
+                formData: {
+                    categoryId: 0
+                }
             }
         },
         created() {
@@ -60,6 +65,7 @@
             rootAppend() {
                 // 初始化
                 this.addCategoryParentId = 0
+                this.dialogType = '添加'
                 // 打开添加按钮对话框
                 this.addButtonDialogVisible = true
             },
@@ -70,6 +76,7 @@
                     this.$message.error(`添加失败！标签树最大级数为${this.nodeMaxDepth}级`);
                 } else {
                     // 初始化值
+                    this.dialogType = '添加'
                     this.addCategoryParentId = data.categoryId
                     this.addButtonDialogVisible = true
                 }
@@ -122,18 +129,29 @@
                             // 消息提示
                             this.$message({
                                 type: 'success',
-                                message: '删除成功!'
+                                message: '删除分类成功!'
                             });
-                        }else {
+                        } else {
                             this.$message.error(res.data.message);
                         }
                     })
                 }).catch(() => {
                     this.$message({
                         type: 'info',
-                        message: '已取消删除'
+                        message: '已取消删除分类'
                     });
                 });
+            },
+            // 编辑分类
+            edit(node, data) {
+                // 数据清洗
+                delete data['children']
+                // 初始化
+                this.formData = data
+                this.addCategoryParentId = data.categoryId
+                this.dialogType = '修改'
+                // 打开编辑按钮对话框
+                this.addButtonDialogVisible = true
             },
             handleDragStart(node, ev) {
 
