@@ -58,14 +58,9 @@
             },
             // 添加根标签
             rootAppend() {
-                const newChild = {
-                    id: id++,
-                    categoryName: 'testtest',
-                    children: []
-                }
-                this.data.push(newChild)
                 // 初始化
                 this.addCategoryParentId = 0
+                // 打开添加按钮对话框
                 this.addButtonDialogVisible = true
             },
             // 添加子标签

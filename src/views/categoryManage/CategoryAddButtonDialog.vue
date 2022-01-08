@@ -28,7 +28,6 @@
                     </el-radio-group>
                 </el-form-item>
             </el-form>
-            {{ruleForm}}
             <span slot="footer" class="dialog-footer">
                 <el-button @click="cancel">取 消</el-button>
                 <el-button type="primary" @click="submit" :disabled="isSubmit">提 交</el-button>
