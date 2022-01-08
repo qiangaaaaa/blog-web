@@ -26,13 +26,13 @@
         },
         created() {
             // 初始化数据
-            this.getLabelData()
+            this.getData()
         },
         computed: {
         },
         watch: {
             page(newValue, oldValue) {
-                this.getLabelData()
+                this.getData()
             }
         },
         methods: {
@@ -41,7 +41,7 @@
                 this.selection = selection
             },
             // 请求getCasualUserData封装
-            getLabelData(dataPage = this.page, dataKey = '') {
+            getData(dataPage = this.page, dataKey = '') {
                 getLabelData(dataPage, dataKey).then(res => {
                     this.tableData = res.data.data
                     // 更新表头
@@ -57,7 +57,7 @@
                 // 重置选中的数据
                 this.selection = []
                 // 重新请求第一页数据
-                this.getLabelData(1)
+                this.getData(1)
             }
         },
         components: {

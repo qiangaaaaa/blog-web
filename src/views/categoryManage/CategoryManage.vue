@@ -12,12 +12,13 @@
                     <i class="el-icon-circle-plus-outline categoryButton" @click="() => append(node,data)">添加</i>
                     <i class="el-icon-remove-outline categoryButton" @click="() => remove(node, data)">删除</i>
                     <i class="el-icon-zoom-in categoryButton">编辑</i>
-                </span>  
+                </span>
             </div>
         </el-tree>
         </el-alert>
-        <CategoryAddButtonDialog :parentCategoryId="addCategoryParentId" :dialogVisible="addButtonDialogVisible" @addButtonDialogClose="addButtonDialogClose"></CategoryAddButtonDialog>
-    </div> 
+        <CategoryAddButtonDialog :parentCategoryId="addCategoryParentId" :dialogVisible="addButtonDialogVisible"
+            @addButtonDialogClose="addButtonDialogClose"></CategoryAddButtonDialog>
+    </div>
 </template>
 <script>
     import CategoryAddButtonDialog from './CategoryAddButtonDialog'
@@ -40,27 +41,7 @@
         },
         created() {
             // 从数据库中读取数据
-            getCategory().then(res => {
-                // 数据清洗
-                this.data = res.data.data.map(item => {
-                    let children = item.subCategory
-                    children = children.map(item2 => {
-                        return {
-                            categoryId: item2.categoryId,
-                            categoryName: item2.categoryName,
-                            sort: item2.sort,
-                            parentCategoryId: item2.parentCategoryId,
-                        }
-                    })
-                    return {
-                        categoryId: item.categoryId,
-                        categoryName: item.categoryName,
-                        sort: item.sort,
-                        parentCategoryId: item.parentCategoryId,
-                        children,
-                    }
-                })
-            })
+            this.getCategory()
             // 初始化错误提示节流函数
             this.errorMessageAlert = throttle(() => {
                 // 超过最大深度
@@ -107,6 +88,34 @@
             // 修改addButtonDialogVisible状态
             addButtonDialogClose() {
                 this.addButtonDialogVisible = false
+            },
+            // 初始化 从页面读取数据
+            getCategory() {
+                getCategory().then(res => {
+                    // 数据清洗
+                    this.data = res.data.data.map(item => {
+                        let children = item.subCategory
+                        children = children.map(item2 => {
+                            return {
+                                categoryId: item2.categoryId,
+                                categoryName: item2.categoryName,
+                                sort: item2.sort,
+                                parentCategoryId: item2.parentCategoryId,
+                            }
+                        })
+                        return {
+                            categoryId: item.categoryId,
+                            categoryName: item.categoryName,
+                            sort: item.sort,
+                            parentCategoryId: item.parentCategoryId,
+                            children,
+                        }
+                    })
+                })
+            },
+            // 页面刷新
+            refresh() {
+                this.$options.methods.getCategory()
             },
             remove(node, data) {
                 console.log(data);

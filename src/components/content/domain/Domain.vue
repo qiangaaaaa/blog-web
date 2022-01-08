@@ -72,7 +72,7 @@
             },
             // 点击搜索按钮 点击事件触发
             searchClick() {
-                this.$parent.getUserManageData(1, this.search)
+                this.$parent.getData(1, this.search)
             },
             // 数据刷新
             refresh() {

@@ -33,7 +33,6 @@
                 <el-button type="primary" @click="submit" :disabled="isSubmit">提 交</el-button>
             </span>
         </el-dialog>
-        {{ruleForm}}
     </div>
 </template>
 <script>
