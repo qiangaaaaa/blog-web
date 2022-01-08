@@ -78,9 +78,10 @@
             addButtonDialogClose() {
                 this.addButtonDialogVisible = false
             },
-            // 初始化 从页面读取数据
+            // 从数据库中读取数据
             getCategory() {
                 getCategory().then(res => {
+                    console.log(res);
                     // 数据清洗
                     this.data = res.data.data.map(item => {
                         let children = item.subCategory

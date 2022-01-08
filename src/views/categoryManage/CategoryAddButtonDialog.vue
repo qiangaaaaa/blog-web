@@ -93,8 +93,6 @@
             // 提交按钮点击事件
             submit() {
                 const postData = Object.assign({}, this.ruleForm, {parentCategoryId: this.parentCategoryId})
-                console.log(postData);
-                console.log(this.parentCategoryId);
                 addCategory(postData).then(res => {
                     if (res.data.status === 0) {
                         // 操作成功

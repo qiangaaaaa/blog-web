@@ -4,6 +4,7 @@ import {
 
 // 获取分类树
 export function getCategory() {
+    console.log("come");
     return request({
         url: '/category/list/tree'
     })
