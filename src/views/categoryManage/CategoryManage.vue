@@ -24,7 +24,7 @@
     import CategoryAddButtonDialog from './CategoryAddButtonDialog'
 
     import { getMaxDepth, throttle } from 'common/utils'
-    import { getCategory } from 'network/category'
+    import { getCategory, deleteCategory } from 'network/category'
 
     let id = 1000;
     export default {
@@ -108,13 +108,32 @@
                 console.log("刷新");
                 this.getCategory()
             },
+            // 删除分类
             remove(node, data) {
-                console.log(data);
-                console.log(node);
-                const parent = node.parent;
-                const children = parent.data.children || parent.data;
-                const index = children.findIndex(d => d.id === data.id);
-                children.splice(index, 1);
+                this.$confirm('此操作将永久删除该分类, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    deleteCategory(data.categoryId).then(res => {
+                        if (res.data.status === 0) {
+                            // 页面刷新
+                            this.refresh()
+                            // 消息提示
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                        }else {
+                            this.$message.error(res.data.message);
+                        }
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
             },
             handleDragStart(node, ev) {
 
