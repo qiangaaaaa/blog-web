@@ -1,6 +1,6 @@
 <template>
     <div class="category-add-button-dialog">
-        <el-dialog title="添加或编辑分类" :visible.sync="isDialogVisible" width="30%" :before-close="handleClose">
+        <el-dialog :title="elDialogTitle" :visible.sync="isDialogVisible" width="30%" :before-close="handleClose">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
                 <!-- 添加按钮独特 -->
                 <el-form-item label="父分类id" v-if="isAdd">
@@ -37,7 +37,6 @@
                 <el-button @click="cancel">取 消</el-button>
                 <el-button type="primary" @click="submit" :disabled="isSubmit">提 交</el-button>
             </span>
-            {{ruleForm}}
         </el-dialog>
     </div>
 </template>
@@ -51,6 +50,13 @@
             return {
                 // 表单数据
                 ruleForm: {
+                    categoryName: '',
+                    iconUrl: '',
+                    sort: '',
+                    showStatus: ''
+                },
+                // 编辑状态时，最初始状态
+                initial: {
                     categoryName: '',
                     iconUrl: '',
                     sort: '',
@@ -73,6 +79,10 @@
             // 当前功能是否是添加功能
             isAdd() {
                 return this.dialogType === '添加'
+            },
+            // el-dialog的title
+            elDialogTitle() {
+                return this.dialogType + '分类'
             }
         },
         methods: {
@@ -80,9 +90,9 @@
             categoryAddOrUpdate(postData) {
                 console.log(postData);
                 let fn = null
-                if(this.isAdd) {
+                if (this.isAdd) {
                     fn = addCategory
-                }else {
+                } else {
                     fn = updateCategory
                 }
                 fn(postData).then(res => {
@@ -150,8 +160,17 @@
             },
             // 清空数据
             clearData() {
-                for (const item in this.ruleForm) {
-                    this.ruleForm[item] = ''
+                if (this.isAdd) {
+                    // 添加按钮还原
+                    for (const item in this.ruleForm) {
+                        this.ruleForm[item] = ''
+                    }
+                } else {
+                    // 编辑按钮还原
+                    this.ruleForm.categoryName = this.initial.categoryName
+                    this.ruleForm.iconUrl = this.initial.iconUrl
+                    this.ruleForm.sort = this.initial.sort
+                    this.ruleForm.showStatus = this.initial.showStatus
                 }
             }
         },
@@ -167,7 +186,7 @@
                         this.$refs.ruleForm.validate((isPass) => {
                             this.isSubmit = !isPass
                         })
-                    }else {
+                    } else {
                         this.isSubmit = false
                     }
                 },
@@ -179,6 +198,12 @@
                 this.ruleForm.iconUrl = newValue.iconUrl || ''
                 this.ruleForm.sort = newValue.sort || ''
                 this.ruleForm.showStatus = newValue.showStatus || ''
+
+                // 保存最初状态
+                this.initial.categoryName = newValue.categoryName || ''
+                this.initial.iconUrl = newValue.iconUrl || ''
+                this.initial.sort = newValue.sort || ''
+                this.initial.showStatus = newValue.showStatus || ''
             }
         },
         props: {

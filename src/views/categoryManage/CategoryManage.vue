@@ -88,7 +88,6 @@
             // 从数据库中读取数据
             getCategory() {
                 getCategory().then(res => {
-                    console.log(res);
                     // 数据清洗
                     this.data = res.data.data.map(item => {
                         let children = item.subCategory
@@ -113,7 +112,9 @@
             // 页面刷新
             refresh() {
                 console.log("刷新");
-                this.getCategory()
+                setTimeout(() => {
+                    this.getCategory()
+                },600)
             },
             // 删除分类
             remove(node, data) {
