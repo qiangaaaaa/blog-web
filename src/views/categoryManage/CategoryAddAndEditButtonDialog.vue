@@ -88,7 +88,6 @@
         methods: {
             // 数据添加or更新
             categoryAddOrUpdate(postData) {
-                console.log(postData);
                 let fn = null
                 if (this.isAdd) {
                     fn = addCategory
@@ -165,14 +164,12 @@
                     for (const item in this.ruleForm) {
                         this.ruleForm[item] = ''
                     }
-                    console.log(' 添加按钮清空完毕！');
                 } else {
                     // 编辑按钮还原
                     this.ruleForm.categoryName = this.initial.categoryName
                     this.ruleForm.iconUrl = this.initial.iconUrl
                     this.ruleForm.sort = this.initial.sort
                     this.ruleForm.showStatus = this.initial.showStatus
-                    console.log(' 编辑按钮清空完毕！');
                 }
             }
         },

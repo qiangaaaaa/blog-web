@@ -112,7 +112,6 @@
             },
             // 页面刷新
             refresh() {
-                console.log("刷新");
                 setTimeout(() => {
                     this.getCategory()
                 }, 600)
@@ -151,7 +150,7 @@
                 // 初始化
                 this.formData = data
                 this.addCategoryParentId = data.categoryId
-                this.dialogType = '修改'
+                this.dialogType = '编辑'
                 // 打开编辑按钮对话框
                 this.addAndEditButtonDialogVisible = true
             },
@@ -174,6 +173,7 @@
             handleDrop(draggingNode, dropNode, dropType, ev) {
                 // console.log('tree drop: ', dropNode.label, dropType);
             },
+            // 判断目标节点能否被放置
             allowDrop(draggingNode, dropNode, type) {
                 const draggingNodeDepth = getMaxDepth(draggingNode)
                 const dropNodeDepth = getMaxDepth(dropNode)
@@ -192,6 +192,11 @@
                 }
                 return true
             },
+            // 拖拽结束时（可能未成功）触发的事件
+            handleDragEnd(draggingNode, dropNode) {
+                console.log(draggingNode);
+                console.log(dropNode);
+            }
         },
         components: {
             CategoryAddAndEditButtonDialog
