@@ -40,7 +40,7 @@ export function updateCategory(newCategory) {
     return request({
         url: '/category/update',
         method: 'put',
-        data
+        data: newCategory
     })
 }
 

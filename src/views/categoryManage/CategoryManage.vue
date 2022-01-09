@@ -2,10 +2,8 @@
     <div class="block">
         <el-button type="primary" plain icon="el-icon-folder-add" @click="rootAppend">添加根标签</el-button>
         <el-button type="primary" plain icon="el-icon-s-operation" @click="allExpand">全部展开</el-button>
-        <el-tree :data="data" default-expand-all @node-drag-start="handleDragStart" @node-drag-enter="handleDragEnter"
-            @node-drag-leave="handleDragLeave" @node-drag-over="handleDragOver" @node-drag-end="handleDragEnd"
-            @node-drop="handleDrop" draggable :allow-drop="allowDrop" :expand-on-click-node="false" ref="tree"
-            class="categoryTree">
+        <el-tree :data="data" default-expand-all @node-drop="handleDrop" @node-drag-end="handleDragEnd" @node-drag-start="handleDragStart" draggable :allow-drop="allowDrop"
+            :expand-on-click-node="false" ref="tree" class="categoryTree">
             <div class="custom-tree-node" slot-scope="{ node, data }">
                 <span>{{ data.categoryName }}</span>
                 <span>
@@ -26,7 +24,7 @@
     import CategoryAddAndEditButtonDialog from './CategoryAddAndEditButtonDialog'
 
     import { getMaxDepth, throttle } from 'common/utils'
-    import { getCategory, deleteCategory } from 'network/category'
+    import { getCategory, deleteCategory, updateCategory } from 'network/category'
 
     let id = 1000;
     export default {
@@ -34,6 +32,7 @@
         data() {
             return {
                 data: [],
+                dataCopy: [], // data副本，仅在拖拽节点用。
                 nodeMaxDepth: 2, // 树形节点最大深度
                 isAllExpand: false, // 是否全部展开
                 errorMessageAlert: null,
@@ -154,25 +153,6 @@
                 // 打开编辑按钮对话框
                 this.addAndEditButtonDialogVisible = true
             },
-            handleDragStart(node, ev) {
-
-                // console.log('drag start', node);
-            },
-            handleDragEnter(draggingNode, dropNode, ev) {
-                // console.log('tree drag enter: ', dropNode.label);
-            },
-            handleDragLeave(draggingNode, dropNode, ev) {
-                // console.log('tree drag leave: ', dropNode.label);
-            },
-            handleDragOver(draggingNode, dropNode, ev) {
-                // console.log('tree drag over: ', dropNode.label);
-            },
-            handleDragEnd(draggingNode, dropNode, dropType, ev) {
-                // console.log('tree drag end: ', dropNode && dropNode.label, dropType);
-            },
-            handleDrop(draggingNode, dropNode, dropType, ev) {
-                // console.log('tree drop: ', dropNode.label, dropType);
-            },
             // 判断目标节点能否被放置
             allowDrop(draggingNode, dropNode, type) {
                 const draggingNodeDepth = getMaxDepth(draggingNode)
@@ -192,10 +172,60 @@
                 }
                 return true
             },
+            // 节点开始拖拽时触发的事件
+            handleDragStart() {
+                this.dataCopy = this.data
+            },
+            // 拖拽成功完成时触发的事件
+            handleDrop() {
+                this.data = this.dataCopy
+                // 清零
+                this.dataCopy = []
+            },
             // 拖拽结束时（可能未成功）触发的事件
-            handleDragEnd(draggingNode, dropNode) {
-                console.log(draggingNode);
-                console.log(dropNode);
+            handleDragEnd(draggingNode, dropNode, position) {
+                // 被拖拽分类id
+                const draggingCategoryId = draggingNode.data.categoryId
+                // 最后进入的分类id
+                const dropCategoryId = dropNode.data.categoryId
+                // 最后进入的分类的父id
+                const dropCategoryParentId = dropNode.data.parentCategoryId
+                // 最后进入的分类的sort
+                const dropCategorySort = dropNode.data.sort
+
+                // 更新分类所需数据
+                let postData = {}
+                if (position === 'inner') {
+                    // 如果最后进入分类里
+                    postData = {
+                        categoryId: draggingCategoryId,
+                        parentCategoryId: dropCategoryId
+                    }
+                } else {
+                    postData = {
+                        categoryId: draggingCategoryId,
+                        parentCategoryId: dropCategoryParentId,
+                    }
+                    if (position === 'before') {
+                        // 最后进入分类前
+                        postData.sort = dropCategorySort - 1
+                    } else if (position === 'after') {
+                        postData.sort = dropCategorySort + 1
+                    } else {
+                        this.$message.error('发生未知错误，拖拽失败！')
+                        return
+                    }
+                }
+                // 网络请求
+                updateCategory(postData).then(res => {
+                    if (res.data.status === 0) {
+                        // 刷新
+                        this.refresh()
+                        this.$message.success('拖拽成功！')
+                    } else {
+                        this.$message.error(`拖拽失败！${res.data.message}`)
+                    }
+                })
             }
         },
         components: {
