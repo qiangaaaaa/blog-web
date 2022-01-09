@@ -37,7 +37,6 @@
                 <el-button @click="cancel">取 消</el-button>
                 <el-button type="primary" @click="submit" :disabled="isSubmit">提 交</el-button>
             </span>
-            {{ruleForm}}
         </el-dialog>
     </div>
 </template>
