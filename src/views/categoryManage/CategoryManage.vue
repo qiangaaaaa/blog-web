@@ -16,13 +16,14 @@
             </div>
         </el-tree>
         </el-alert>
-        <CategoryAddButtonDialog :parentCategoryId="addCategoryParentId" :formData="formData" :dialogType="dialogType"
-            :dialogVisible="addButtonDialogVisible" @addButtonDialogClose="addButtonDialogClose" @refresh="refresh">
-        </CategoryAddButtonDialog>
+        <CategoryAddAndEditButtonDialog :parentCategoryId="addCategoryParentId" :formData="formData"
+            :dialogType="dialogType" :dialogVisible="addAndEditButtonDialogVisible"
+            @addAndEditButtonDialogClose="addAndEditButtonDialogClose" @refresh="refresh">
+        </CategoryAddAndEditButtonDialog>
     </div>
 </template>
 <script>
-    import CategoryAddButtonDialog from './CategoryAddButtonDialog'
+    import CategoryAddAndEditButtonDialog from './CategoryAddAndEditButtonDialog'
 
     import { getMaxDepth, throttle } from 'common/utils'
     import { getCategory, deleteCategory } from 'network/category'
@@ -36,7 +37,7 @@
                 nodeMaxDepth: 2, // 树形节点最大深度
                 isAllExpand: false, // 是否全部展开
                 errorMessageAlert: null,
-                addButtonDialogVisible: false, // 是否显示添加按钮对话框
+                addAndEditButtonDialogVisible: false, // 是否显示添加按钮对话框
                 addCategoryParentId: 0, // 添加按钮传给对话框的父标签id,
                 dialogType: '添加', // 对话框类型
                 formData: {
@@ -67,7 +68,7 @@
                 this.addCategoryParentId = 0
                 this.dialogType = '添加'
                 // 打开添加按钮对话框
-                this.addButtonDialogVisible = true
+                this.addAndEditButtonDialogVisible = true
             },
             // 添加子标签
             append(node, data) {
@@ -78,12 +79,12 @@
                     // 初始化值
                     this.dialogType = '添加'
                     this.addCategoryParentId = data.categoryId
-                    this.addButtonDialogVisible = true
+                    this.addAndEditButtonDialogVisible = true
                 }
             },
             // 添加按钮对话框已关闭
-            addButtonDialogClose() {
-                this.addButtonDialogVisible = false
+            addAndEditButtonDialogClose() {
+                this.addAndEditButtonDialogVisible = false
             },
             // 从数据库中读取数据
             getCategory() {
@@ -114,7 +115,7 @@
                 console.log("刷新");
                 setTimeout(() => {
                     this.getCategory()
-                },600)
+                }, 600)
             },
             // 删除分类
             remove(node, data) {
@@ -152,7 +153,7 @@
                 this.addCategoryParentId = data.categoryId
                 this.dialogType = '修改'
                 // 打开编辑按钮对话框
-                this.addButtonDialogVisible = true
+                this.addAndEditButtonDialogVisible = true
             },
             handleDragStart(node, ev) {
 
@@ -193,7 +194,7 @@
             },
         },
         components: {
-            CategoryAddButtonDialog
+            CategoryAddAndEditButtonDialog
         }
     }
 </script>

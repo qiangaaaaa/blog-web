@@ -1,5 +1,5 @@
 <template>
-    <div class="category-add-button-dialog">
+    <div class="category-add-and-edit-button-dialog">
         <el-dialog :title="elDialogTitle" :visible.sync="isDialogVisible" width="30%" :before-close="handleClose">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
                 <!-- 添加按钮独特 -->
@@ -45,7 +45,7 @@
 
     // 分类管理-添加按钮模态框
     export default {
-        name: 'CategoryAddButtonDialog',
+        name: 'CategoryAddAndEditButtonDialog',
         data() {
             return {
                 // 表单数据
@@ -129,7 +129,7 @@
             // 对话框关闭
             addButtonDialogClose(_this) {
                 // 告诉父组件已关闭
-                _this.$emit('addButtonDialogClose')
+                _this.$emit('addAndEditButtonDialogClose')
                 // 清空本组件所有数据
                 _this.clearData()
             },
@@ -165,12 +165,14 @@
                     for (const item in this.ruleForm) {
                         this.ruleForm[item] = ''
                     }
+                    console.log(' 添加按钮清空完毕！');
                 } else {
                     // 编辑按钮还原
                     this.ruleForm.categoryName = this.initial.categoryName
                     this.ruleForm.iconUrl = this.initial.iconUrl
                     this.ruleForm.sort = this.initial.sort
                     this.ruleForm.showStatus = this.initial.showStatus
+                    console.log(' 编辑按钮清空完毕！');
                 }
             }
         },
@@ -178,6 +180,10 @@
             // 更新对话框状态
             dialogVisible(newValue) {
                 this.isDialogVisible = newValue
+                if (this.isDialogVisible) {
+                    // 清空本组件所有数据
+                    this.clearData()
+                }
             },
             // 表单实时校验
             ruleForm: {
