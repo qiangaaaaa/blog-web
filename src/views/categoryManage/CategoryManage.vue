@@ -2,8 +2,9 @@
     <div class="block">
         <el-button type="primary" plain icon="el-icon-folder-add" @click="rootAppend">添加根标签</el-button>
         <el-button type="primary" plain icon="el-icon-s-operation" @click="allExpand">全部展开</el-button>
-        <el-tree :data="data" default-expand-all @node-drop="handleDrop" @node-drag-end="handleDragEnd" @node-drag-start="handleDragStart" draggable :allow-drop="allowDrop"
-            :expand-on-click-node="false" ref="tree" class="categoryTree">
+        <el-tree :data="data" default-expand-all @node-drop="handleDrop" @node-drag-end="handleDragEnd"
+            @node-drag-start="handleDragStart" draggable :allow-drop="allowDrop" :expand-on-click-node="false"
+            ref="tree" class="categoryTree">
             <div class="custom-tree-node" slot-scope="{ node, data }">
                 <span>{{ data.categoryName }}</span>
                 <span>
@@ -162,7 +163,6 @@
                 // 限制最大深度为nodeMaxDepth
                 if (type === "inner") {
                     if (sum > this.nodeMaxDepth) {
-                        this.errorMessageAlert()
                         return false
                     }
                 } else {
@@ -212,7 +212,8 @@
                     } else if (position === 'after') {
                         postData.sort = dropCategorySort + 1
                     } else {
-                        this.$message.error('发生未知错误，拖拽失败！')
+                        // allowDrop 返回的是false。超过最大深度，禁止放置！
+                        this.$message.error(`添加失败！标签树最大级数为${this.nodeMaxDepth}级`);
                         return
                     }
                 }
