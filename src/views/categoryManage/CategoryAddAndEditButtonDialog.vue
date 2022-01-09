@@ -28,8 +28,8 @@
                 </el-form-item>
                 <el-form-item label="是否显示" prop="showStatus">
                     <el-radio-group v-model="ruleForm.showStatus">
-                        <el-radio label="0">显示</el-radio>
-                        <el-radio label="1">不显示</el-radio>
+                        <el-radio :label="0">显示</el-radio>
+                        <el-radio :label="1">不显示</el-radio>
                     </el-radio-group>
                 </el-form-item>
             </el-form>
@@ -37,6 +37,7 @@
                 <el-button @click="cancel">取 消</el-button>
                 <el-button type="primary" @click="submit" :disabled="isSubmit">提 交</el-button>
             </span>
+            {{ruleForm}}
         </el-dialog>
     </div>
 </template>
@@ -200,13 +201,13 @@
                 this.ruleForm.categoryName = newValue.categoryName || ''
                 this.ruleForm.iconUrl = newValue.iconUrl || ''
                 this.ruleForm.sort = newValue.sort || ''
-                this.ruleForm.showStatus = newValue.showStatus || ''
-
+                this.ruleForm.showStatus = newValue.showStatus
+                
                 // 保存最初状态
                 this.initial.categoryName = newValue.categoryName || ''
                 this.initial.iconUrl = newValue.iconUrl || ''
                 this.initial.sort = newValue.sort || ''
-                this.initial.showStatus = newValue.showStatus || ''
+                this.initial.showStatus = newValue.showStatus
             }
         },
         props: {

@@ -98,6 +98,8 @@
                                 categoryName: item2.categoryName,
                                 sort: item2.sort,
                                 parentCategoryId: item2.parentCategoryId,
+                                showStatus: item2.showStatus
+
                             }
                         })
                         return {
@@ -106,6 +108,7 @@
                             sort: item.sort,
                             parentCategoryId: item.parentCategoryId,
                             children,
+                            showStatus: item.showStatus
                         }
                     })
                 })
