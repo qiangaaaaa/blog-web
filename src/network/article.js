@@ -37,3 +37,16 @@ export function updateArticle(data) {
         }
     })
 }
+
+/**
+ * 删除文章
+ * @param {Array} articleIds 文章ID列表
+ */
+export function deleteArticle(articleIds) {
+    return request({
+        url: 'article/delete',
+        method: 'delete',
+        data: articleIds
+    })
+}
+
