@@ -23,3 +23,17 @@ export function saveArticle(data) {
     })
 }
 
+// 修改文章
+export function updateArticle(data) {
+    const {articleId, title, content, labelIds} = data
+    return request({
+        url: `article/update`,
+        method: 'put',
+        data: {
+            articleId,
+            title,
+            content,
+            labelIds
+        }
+    })
+}
