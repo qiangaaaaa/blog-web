@@ -1,73 +1,62 @@
 <template>
-    <div class="article-manage">
-        <!-- 功能区 -->
-        <domain :selection="selection" :keys="keys" @refresh="refresh" :url='url'></domain>
-        <!-- 信息展示区 -->
-        <data-show @rowSelected="rowSelected" :tableData="tableData" :url='url' :keys="keys" @currPageChange="currPageChange" @refresh="refresh">
-        </data-show>
+    <div>
+        <div class="mavonEditor">
+            <mavon-editor v-model="handbook" @save="saveContent" @imgAdd="$imgAdd" />
+        </div>
     </div>
 </template>
 <script>
-    import Domain from 'components/content/domain/Domain'
-    import DataShow from 'components/content/dataShow/DataShow'
-
-    import { getCasualUserData } from 'network/casualUser'
-
+    import { updateArticle } from 'network/article.js'
     export default {
-        name: 'ArticleManage',
+        name: '',
         data() {
             return {
-                selection: [], // 选中的数据
-                tableData: {}, // 就是接口中的data部分
-                page: 1, // 当前访问到第几页数据
-                keys: [], // 表头
-                url: 'casualuser', // 用于网络请求定位是哪个表,
+                handbook: ''
             }
         },
         created() {
-            // 初始化数据
-            this.getData()
         },
         computed: {
         },
-        watch: {
-            page(newValue, oldValue) {
-                this.getData()
-            }
-        },
         methods: {
-            // 子组件传给父组件选中的数据
-            rowSelected(selection) {
-                this.selection = selection
-            },
-            // 请求getCasualUserData封装
-            getData(dataPage = this.page, dataKey = '') {
-                getCasualUserData(dataPage, dataKey).then(res => {
-                    this.tableData = res.data.data
-                    // 更新表头
-                    this.keys = Object.keys(this.tableData.list[0] || {})
-                    // 手动表头
-                    this.keys = this.keys.length === 0 ? ["casualUserId","email","nickname"] : this.keys
+            // 保存内容
+            saveContent(str1, str2) {
+                this.handbook = str1
+
+                const postData =
+                {
+                    "articleId": 64, //文章id
+                    "title": "Java基础", //标题
+                    "content": this.handbook, //内容
+                    "labelIds": [
+                        9
+                    ] //文章标签id  
+                }
+
+                updateArticle(postData).then(res => {
+                    console.log(res.data);
                 })
             },
-            currPageChange(currPage) {
-                this.page = currPage
-            },
-            refresh() {
-                // 重置选中的数据
-                this.selection = []
-                // 重新请求第一页数据
-                this.getData(1)
+            // 绑定@imgAdd event
+            $imgAdd(pos, $file) {
+                // 第一步.将图片上传到服务器.
+                let formdata = new FormData();
+                formdata.append('image', $file);
+                console.log($file);
+                axios({
+                    url: 'server url',
+                    method: 'post',
+                    data: formdata,
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                }).then((url) => {
+                    // 第二步.将返回的url替换到文本原位置![...](0) -> ![...](url)
+                    // $vm.$img2Url 详情见本页末尾
+                    $vm.$img2Url(pos, url);
+                })
             }
         },
-        components: {
-            Domain,
-            DataShow
-        }
     }
 </script>
 <style scoped>
-    .article-manage {
-        height: 100%;
-    }
+
 </style>

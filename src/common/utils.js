@@ -35,20 +35,26 @@ function debounce(fn, delay = 1000) {
  * @param {Number} delay 冷却时间
  * @returns 
  */
-function throttle(fn, delay = 1500) {
+ function throttle(fn, delay = 1500) {
     let timer = null
-     
-    return function (...args) {
-        if(timer) {
+    let first = true
+
+    return (...args) => {
+        if (timer) {
             return
         }
+        if (first) {
+            fn.apply(this.args)
+            first = false
+            return
+        }
+
         timer = setTimeout(() => {
             fn.apply(this, args)
             timer = null
         }, delay)
     }
 }
-
 
 /**
  * 获取N树最大深度
