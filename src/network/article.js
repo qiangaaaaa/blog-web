@@ -74,3 +74,14 @@ export function searchAricle(data) {
         }
     })
 }
+
+/**
+ * 获取签名，为上传文件做准备
+ * @returns 
+ */
+export function policy() {
+    return request({
+        url: 'oss/policy',
+        method: 'get'
+    })
+}
