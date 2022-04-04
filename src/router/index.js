@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from 'vue-router';
+import {createRouter, createWebHistory} from 'vue-router'
 
 // 路由懒加载
 const CasualUserManage = () => import('../views/casualUserManage/CasualUserManage');
@@ -33,9 +34,14 @@ const routes = [
     }
 ]
 
-const router = new VueRouter({
-    routes,
-    mode: 'history'
-})
+const router = createRouter({
+    history: createWebHistory(),
+    routes
+  })
+
+// const router = new VueRouter({
+//     routes,
+//     mode: 'history'
+// })
 
 export default router
