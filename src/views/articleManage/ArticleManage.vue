@@ -1,9 +1,11 @@
 <template>
     <div>
-        <div class="mavonEditor">
+        <!-- <div class="mavonEditor">
             <mavon-editor v-model="handbook" @save="saveContent" @imgAdd="$imgAdd" />
-        </div>
-        <el-upload class="upload-demo" drag action="https://jsonplaceholder.typicode.com/posts/" multiple>
+        </div> -->
+        <el-upload class="upload-demo" :data="pictureData" drag :action="pictureData.host || 'https://blog-lh.oss-cn-chengdu.aliyuncs.com'"
+            :before-upload="beforeUpload" :on-success="handleUploadSuccess" list-type="picture"
+            :on-error="handleUploadError">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
             <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
@@ -16,7 +18,8 @@
         name: '',
         data() {
             return {
-                handbook: ''
+                handbook: '',
+                pictureData: {}
             }
         },
         created() {
@@ -27,6 +30,32 @@
         computed: {
         },
         methods: {
+            // 上传文件之前的钩子
+            beforeUpload(file) {
+                let _self = this
+                return new Promise((resolve, reject) => {
+                    // 获取签名
+                    policy().then(res => {
+                        _self.pictureData = res.data
+                        _self.pictureData.key = res.data.data.dir + '_${filename}'
+                        resolve(true)
+                    }).catch(err => {
+                        reject(false)
+                    })
+                })
+            },
+            // 上传成功时的钩子
+            handleUploadSuccess(response, file, fileList) {
+                console.log('上传成功');
+                console.log(response);
+                console.log(file);
+                console.log(fileList);
+                
+            },
+            // 上传失败时的钩子
+            handleUploadError(err, file) {
+                console.log(err);
+            },
             // 保存内容
             saveContent(str1, str2) {
                 this.handbook = str1
