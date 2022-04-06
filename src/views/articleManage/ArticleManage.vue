@@ -1,11 +1,11 @@
 <template>
     <div>
-        <!-- <div class="mavonEditor">
+        <div class="mavonEditor">
             <mavon-editor v-model="handbook" @save="saveContent" @imgAdd="$imgAdd" />
-        </div> -->
-        <el-upload class="upload-demo" :data="pictureData" drag :action="pictureData.host || 'https://blog-lh.oss-cn-chengdu.aliyuncs.com'"
-            :before-upload="beforeUpload" :on-success="handleUploadSuccess" list-type="picture"
-            :on-error="handleUploadError">
+        </div>
+        <el-upload class="upload-demo" :data="pictureData" drag
+            :action="pictureData.host || 'https://blog-lh.oss-cn-chengdu.aliyuncs.com'" :before-upload="beforeUpload"
+            :on-success="handleUploadSuccess" list-type="picture" :on-error="handleUploadError">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
             <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
@@ -13,7 +13,8 @@
     </div>
 </template>
 <script>
-    import { updateArticle, policy } from 'network/article.js'
+    import { updateArticle, policy, postImg } from 'network/article.js'
+    import { getUuid } from 'common/utils.js'
     export default {
         name: '',
         data() {
@@ -37,24 +38,20 @@
                     // 获取签名
                     policy().then(res => {
                         _self.pictureData = res.data
-                        _self.pictureData.key = res.data.data.dir + '_${filename}'
+                        const uuid = getUuid()
+                        _self.pictureData.key = uuid
+                        console.log(uuid);
                         resolve(true)
                     }).catch(err => {
                         reject(false)
                     })
                 })
             },
-            // 上传成功时的钩子
+            // upload上传成功时的钩子
             handleUploadSuccess(response, file, fileList) {
-                console.log('上传成功');
-                console.log(response);
-                console.log(file);
-                console.log(fileList);
-                
             },
-            // 上传失败时的钩子
+            // upload上传失败时的钩子
             handleUploadError(err, file) {
-                console.log(err);
             },
             // 保存内容
             saveContent(str1, str2) {
@@ -76,20 +73,54 @@
             },
             // 绑定@imgAdd event
             $imgAdd(pos, $file) {
-                // 第一步.将图片上传到服务器.
-                let formdata = new FormData();
-                formdata.append('image', $file);
-                console.log($file);
-                axios({
-                    url: 'server url',
-                    method: 'post',
-                    data: formdata,
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                }).then((url) => {
-                    // 第二步.将返回的url替换到文本原位置![...](0) -> ![...](url)
-                    // $vm.$img2Url 详情见本页末尾
-                    $vm.$img2Url(pos, url);
+                let formData = {}
+                // 获取签名
+                policy().then(res => {
+                    formData = res.data
+                    const uuid = getUuid()
+                    formData.key = uuid
+                    // formData['image'] = $file;
+
+                    const imageToBase64 = function (img) {
+                        return new Promise((resolve) => {
+                            let reader = new FileReader();
+                            reader.readAsDataURL(img); //转化二进制流，异步方法
+                            reader.onload = (e) => {
+                                // console.log(e.target.result,'-----res')
+                                resolve(e.target.result);
+                            };
+                        });
+                    }
+                    let _file = null
+                    imageToBase64($file).then(res1 => {
+                        _file = res1
+                        postImg(_file, formData).then(res => {
+                            console.log('成功！！！', res);
+                        }).catch(err => {
+                            console.log('失败！！！', err);
+                        })
+                    })
+
+                }).catch(err => {
+                    console.log(err);
                 })
+
+
+
+                // // 第一步.将图片上传到服务器.
+                // let formdata = new FormData();
+                // formdata.append('image', $file);
+                // console.log($file);
+                // axios({
+                //     url: 'server url',
+                //     method: 'post',
+                //     data: formdata,
+                //     headers: { 'Content-Type': 'multipart/form-data' },
+                // }).then((url) => {
+                //     // 第二步.将返回的url替换到文本原位置![...](0) -> ![...](url)
+                //     // $vm.$img2Url 详情见本页末尾
+                //     $vm.$img2Url(pos, url);
+                // })
             }
         },
     }
