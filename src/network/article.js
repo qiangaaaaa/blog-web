@@ -1,8 +1,7 @@
 import {request} from './request'
-import { getUuid } from 'common/utils.js'
 
 // 获取所有文章（分页）
-export function getAllArticle(page = 1, limit = 10, sidx = 'title', order = 'desc', key = '') {
+export function getAllArticle(page = 1, key = '', limit = 10, sidx = 'title', order = 'desc') {
     return request({
         url: `article/list?page=${page}&limit=${limit}&sidx=${sidx}&order=${order}&${key}`
     })
@@ -88,7 +87,6 @@ export function policy() {
 }
 
 export function postImg(host, formData) {
-    
     return request({
         url: host,
         method: 'post',

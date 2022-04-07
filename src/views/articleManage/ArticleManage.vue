@@ -1,107 +1,95 @@
 <template>
-    <div>
-        <div class="mavonEditor">
-            <mavon-editor v-model="handbook" @save="saveContent" @imgAdd="$imgAdd" />
-        </div>
-        <el-upload class="upload-demo" :data="pictureData" drag
-            :action="pictureData.host || 'https://blog-lh.oss-cn-chengdu.aliyuncs.com'" :before-upload="beforeUpload"
-            :on-success="handleUploadSuccess" list-type="picture" :on-error="handleUploadError">
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-        </el-upload>
+    <div class="user-manage">
+        <!-- 功能区 -->
+        <domain :selection="selection" :keys="keys" @refresh="refresh" :url='url'></domain>
+        <!-- 信息展示区 -->
+        <data-show @rowSelected="rowSelected" :tableData="tableData" :url='url' :keys="keys"
+            @currPageChange="currPageChange" @refresh="refresh">
+        </data-show>
     </div>
 </template>
 <script>
-    import { updateArticle, policy, postImg } from 'network/article.js'
-    import { getUuid } from 'common/utils.js'
+    import Domain from 'components/content/domain/Domain'
+    import DataShow from 'components/content/dataShow/DataShow'
+
+    import { getAllArticle } from 'network/article'
+
     export default {
-        name: '',
+        name: 'ArticleManage',
         data() {
             return {
-                handbook: '',
-                pictureData: {}
+                selection: [], // 选中的数据
+                tableData: {}, // 就是接口中的data部分
+                page: 1, // 当前访问到第几页数据
+                keys: [], // 表头
+                url: 'article', // 用于网络请求定位是哪个表,
             }
         },
         created() {
+            // 初始化数据
+            this.getData()
         },
         computed: {
         },
-        methods: {
-            // 上传文件之前的钩子
-            beforeUpload(file) {
-                let _self = this
-                return new Promise((resolve, reject) => {
-                    // 获取签名
-                    policy().then(res => {
-                        _self.pictureData = res.data
-                        const uuid = getUuid()
-                        _self.pictureData.key = uuid
-                        resolve(true)
-                    }).catch(err => {
-                        reject(false)
-                    })
-                })
-            },
-            // upload上传成功时的钩子
-            handleUploadSuccess(response, file, fileList) {
-            },
-            // upload上传失败时的钩子
-            handleUploadError(err, file) {
-            },
-            // 保存内容
-            saveContent(str1, str2) {
-                this.handbook = str1
-
-                const postData =
-                {
-                    "articleId": 64, //文章id
-                    "title": "Java基础", //标题
-                    "content": this.handbook, //内容
-                    "labelIds": [
-                        9
-                    ] //文章标签id  
-                }
-
-                updateArticle(postData).then(res => {
-                    console.log(res.data);
-                })
-            },
-            // 绑定@imgAdd event
-            $imgAdd(pos, $file) {
-                let host = ''
-                policy().then(res => {
-                    console.log(res.data.data);
-                    // 获取签名
-                    const { dir, policy, accessid, signature} = res.data.data
-                    const key = dir + getUuid()
-                    host = res.data.data.host || 'https://blog-lh.oss-cn-chengdu.aliyuncs.com'
-                    const formData = {
-                        key,
-                        policy,
-                        OSSAccessKeyId: accessid,
-                        signature,
-                        'success_action_status': 200
-                    }
-                    console.log('测试图片访问路径：https://blog-lh.oss-cn-chengdu.aliyuncs.com/' + key);
-                    return new Promise((resolve) => {
-                        resolve(formData)
-                    })
-                }).then(res => {
-                    // 整理要发送的数据
-                    let formData = new FormData()
-                    for (let item in res) {
-                        formData.append(item, res[item])
-                    }
-                    formData.append('file', $file);
-                    return postImg(host, formData)
-                }).then(res => {
-                    console.log(res);
-                })
+        watch: {
+            page(newValue, oldValue) {
+                this.getData()
             }
         },
+        methods: {
+            // 子组件传给父组件选中的数据
+            rowSelected(selection) {
+                this.selection = selection
+            },
+            // 请求getCasualUserData封装
+            getData(dataPage = this.page, dataKey = '') {
+                getAllArticle(dataPage, dataKey).then(res => {
+                    // 洗list
+                    const newRes = res.data.data
+                    const newList = newRes.list.map(item => {
+                        const {
+                            articleId,
+                            title,
+                            publishTime,
+                            editTime,
+                        } = item
+
+                        return {
+                            articleId,
+                            title,
+                            publishTime,
+                            editTime,
+                        }
+                    })
+                    newRes.list = newList
+                    this.tableData = newRes
+
+                    this.tableData = res.data.data
+
+                    // 更新表头
+                    this.keys = Object.keys(this.tableData.list[0] || {})
+                    // 手动表头
+                    this.keys = this.keys.length === 0 ? ["labelName", "description"] : this.keys
+                })
+            },
+            currPageChange(currPage) {
+                this.page = currPage
+            },
+            refresh() {
+                // 重置选中的数据
+                this.selection = []
+                // 重新请求第一页数据
+                this.getData(1)
+            }
+        },
+        components: {
+            Domain,
+            DataShow
+        }
     }
 </script>
 <style scoped>
-
+    .user-manage {
+        height: 100%;
+    }
 </style>
