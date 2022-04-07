@@ -87,12 +87,12 @@ export function policy() {
     })
 }
 
-export function postImg(imgFile,formData) {
+export function postImg(host, formData) {
     
     return request({
-        url: formData.host || 'https://blog-lh.oss-cn-chengdu.aliyuncs.com',
+        url: host,
         method: 'post',
-        file: imgFile,
         data: formData,
+        headers: { 'Content-Type': 'multipart/form-data' }
     })
 }
