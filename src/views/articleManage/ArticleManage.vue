@@ -71,12 +71,16 @@
             $imgAdd(pos, $file) {
                 let host = ''
                 policy().then(res => {
+                    console.log(res.data.data);
                     // 获取签名
-                    const { dir } = res.data.data
+                    const { dir, policy, accessid, signature} = res.data.data
                     const key = dir + getUuid()
                     host = res.data.data.host || 'https://blog-lh.oss-cn-chengdu.aliyuncs.com'
                     const formData = {
                         key,
+                        policy,
+                        OSSAccessKeyId: accessid,
+                        signature,
                         'success_action_status': 200
                     }
                     console.log('测试图片访问路径：https://blog-lh.oss-cn-chengdu.aliyuncs.com/' + key);
