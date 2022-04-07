@@ -61,12 +61,12 @@
                     {
                         isHaveSon: true,
                         path: '/son1',
-                        name: '父级菜单测试',
+                        name: '测试区',
                         icon: 'el-icon-s-custom',
                         item: [
                             {
                                 path: '/son1',
-                                name: '儿子son1'
+                                name: '文章管理测试Model'
                             },
                             {
                                 path: '/son2',

@@ -6,6 +6,7 @@ const CasualUserManage = () => import('../views/casualUserManage/CasualUserManag
 const LabelManage = () => import('../views/labelManage/LabelManage');
 const ArticleManage = () => import('../views/articleManage/ArticleManage');
 const CategoryManage = () => import('../views/categoryManage/CategoryManage');
+const Manage = () => import('../views/manage/Manage');
 
 Vue.use(VueRouter)
 
@@ -30,6 +31,10 @@ const routes = [
     {
         path: '/categoryManage',
         component: CategoryManage
+    },
+    {
+        path: '/son1',
+        component: Manage
     }
 ]
 
