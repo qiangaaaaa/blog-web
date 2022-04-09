@@ -69,7 +69,7 @@
                     // 更新表头
                     this.keys = Object.keys(this.tableData.list[0] || {})
                     // 手动表头
-                    this.keys = this.keys.length === 0 ? ["labelName", "description"] : this.keys
+                    this.keys = this.keys.length === 0 ? ["articleId", "title", "publishTime", "editTime"] : this.keys
                 })
             },
             currPageChange(currPage) {
