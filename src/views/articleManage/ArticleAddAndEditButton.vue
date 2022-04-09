@@ -3,14 +3,13 @@
       <el-button type="text" @click="dialogFormVisible = true">打开嵌套表单的 Dialog</el-button>
 
       <el-dialog title="文章编辑" :visible.sync="dialogFormVisible" fullscreen >
-         <el-form :model="form">
+         <el-form :model="form" class="form">
             <el-form-item label="标题" :label-width="formLabelWidth" class="item">
                <el-input v-model="form.name" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="封面" :label-width="formLabelWidth" class="item">
+            <el-form-item label="封面" :label-width="formLabelWidth" class="item" id="upload">
                <el-upload class="upload-demo" drag action="https://jsonplaceholder.typicode.com/posts/" multiple>
                   <i class="el-icon-upload"></i>
-                  <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                   <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
                </el-upload>
             </el-form-item>
@@ -151,6 +150,9 @@
       margin: 0 !important;
       font-size: 40px !important;
       line-height: 60px !important;
+   }
+   #upload >>> .el-form-item__content {
+      line-height: 10px !important;
    }
    .item {
       /* 修改表单间距 */
