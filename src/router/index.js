@@ -7,6 +7,7 @@ const LabelManage = () => import('../views/labelManage/LabelManage');
 const ArticleManage = () => import('../views/articleManage/ArticleManage');
 const CategoryManage = () => import('../views/categoryManage/CategoryManage');
 const Manage = () => import('../views/manage/Manage');
+const ArticleAddAndEditButton = () => import('../views/articleManage/ArticleAddAndEditButton')
 
 Vue.use(VueRouter)
 
@@ -35,6 +36,10 @@ const routes = [
     {
         path: '/son1',
         component: Manage
+    },
+    {
+        path: '/son2',
+        component: ArticleAddAndEditButton
     }
 ]
 

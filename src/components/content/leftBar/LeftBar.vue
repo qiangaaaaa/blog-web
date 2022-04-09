@@ -62,15 +62,15 @@
                         isHaveSon: true,
                         path: '/son1',
                         name: '测试区',
-                        icon: 'el-icon-s-custom',
+                        icon: 'el-icon-loading',
                         item: [
                             {
                                 path: '/son1',
-                                name: '文章管理测试Model'
+                                name: '文章管理Model'
                             },
                             {
                                 path: '/son2',
-                                name: '儿子son2'
+                                name: '文章页添加修改按钮'
                             },
                             {
                                 path: '/son3',
