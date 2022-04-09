@@ -1,7 +1,7 @@
 import {request} from './request'
 
 // 获取所有文章（分页）
-export function getAllArticle(page = 1, key = '', limit = 10, sidx = 'title', order = 'desc') {
+export function getAllArticle(page = 1, key = '', limit = 5, sidx = 'title', order = 'desc') {
     return request({
         url: `article/list?page=${page}&limit=${limit}&sidx=${sidx}&order=${order}&${key}`
     })
