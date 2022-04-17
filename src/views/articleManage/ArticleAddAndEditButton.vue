@@ -13,7 +13,7 @@
                   <el-image :src="form1.imageUrl">
                      <div slot="error" class="image-slot">
                         <i class="el-icon-picture-outline-round"></i>
-                     </div> 
+                     </div>
                   </el-image>
                </div>
                <el-upload class="upload-demo" drag action="https://jsonplaceholder.typicode.com/posts/" multiple>
@@ -23,7 +23,7 @@
             </el-form-item>
             <!-- 分类 -->
             <el-form-item label="分类" :label-width="formLabelWidth" class="item">
-               <el-cascader v-model="form1.categoryId" :options="options" :show-all-levels="false"></el-cascader>
+               <el-cascader clearable v-model="form1.categoryId" :options="category" :props="optionProps" :show-all-levels="false"></el-cascader>
             </el-form-item>
             <!-- 标签 -->
             <el-form-item label="标签" :label-width="formLabelWidth" class="item">
@@ -41,7 +41,6 @@
                <mavon-editor class="editor" v-model="form1.content" :scrollStyle="true" />
             </el-form-item>
          </el-form>
-         <h2>{{form1}}</h2>
          <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
             <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
@@ -50,12 +49,20 @@
    </div>
 </template>
 <script>
-   import { getArticleInfo } from 'network/article.js'
-
+   import { getArticleInfo, saveArticle } from 'network/article.js'
+   import { getCategory } from 'network/category.js'
    export default {
       name: 'ArticleAddAndEditButton',
       data() {
          return {
+            // 级联选择器 分类数据
+            category: [],
+            // 级联选择器 更改键名
+            optionProps: {
+               value: 'categoryId',
+               label: 'categoryName',
+               children: 'subCategory'
+            },
             form1: {
                title: '',
                imageUrl: '',
@@ -65,7 +72,7 @@
             },
             dynamicTags: ['标签一', '标签二', '标签三'], // 标签名
             handbook: '',
-            dialogFormVisible: true,
+            dialogFormVisible: false,
             form: {
                name: '',
                region: '',
@@ -80,9 +87,15 @@
             options: [{
                value: 'zhinan',
                label: '指南',
+               parentCategoryId: 0,
+               iconUrl: null,
+               sort: 1,
                children: [{
                   value: 'shejiyuanze',
                   label: '设计原则',
+                  parentCategoryId: 5,
+                  iconUrl: null,
+                  sort: 1,
                }, {
                   value: 'daohang',
                   label: '导航',
@@ -128,11 +141,10 @@
                }]
             }],
             inputVisible: false,
-            inputValue: ''
+            inputValue: '',
          }
       },
       created() {
-         
       },
       computed: {
       },
@@ -157,6 +169,31 @@
             this.inputValue = '';
          }
       },
+      watch: {
+         dialogFormVisible(newValue, oldValue) {
+            // dialog显示
+            if (newValue) {
+               // 更新分类数据
+               getCategory().then(res => {
+                  // 分类数据清洗-删除subCategory长度为0时的category的subCategory
+                  const categoryCleaning = function (categoryData) {
+                     for(let category of categoryData) {
+                        if(category.subCategory.length === 0) {
+                           Reflect.deleteProperty(category, 'subCategory')
+                        }else {
+                           categoryCleaning(category.subCategory)
+                        }
+                     }
+                  }
+                  categoryCleaning(res.data.data)
+                  this.category = res.data.data
+               })
+               // 判断当前是编辑还是添加，更新data
+            }
+         }
+      },
+      props: {
+      }
    }
 </script>
 <style scoped>
