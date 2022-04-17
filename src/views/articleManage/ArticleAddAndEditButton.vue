@@ -2,7 +2,7 @@
    <div id="article-add-edit">
       <el-button type="text" @click="dialogFormVisible = true">打开嵌套表单的 Dialog</el-button>
       <el-dialog title="文章编辑" :visible.sync="dialogFormVisible" fullscreen>
-         <el-form :model="form" class="form">
+         <el-form :model="form1" class="form">
             <!-- 标题 -->
             <el-form-item label="标题" :label-width="formLabelWidth" class="item">
                <el-input v-model="form1.title" autocomplete="off"></el-input>
@@ -42,6 +42,7 @@
                <mavon-editor class="editor" v-model="form1.content" :scrollStyle="true" />
             </el-form-item>
          </el-form>
+         <p>{{form1}}</p>
          <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
             <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
@@ -59,11 +60,12 @@
             apiType: 'save',
             // 级联选择器 分类数据
             category: [],
-            // 级联选择器 更改键名
+            // 级联选择器 props配置
             optionProps: {
                value: 'categoryId',
                label: 'categoryName',
-               children: 'subCategory'
+               children: 'subCategory',
+               emitPath: false
             },
             form1: {
                title: '',
@@ -75,73 +77,7 @@
             dynamicTags: ['标签一', '标签二', '标签三'], // 标签名
             handbook: '',
             dialogFormVisible: false,
-            form: {
-               name: '',
-               region: '',
-               date1: '',
-               date2: '',
-               delivery: false,
-               type: [],
-               resource: '',
-               desc: ''
-            },
             formLabelWidth: '70px',
-            options: [{
-               value: 'zhinan',
-               label: '指南',
-               parentCategoryId: 0,
-               iconUrl: null,
-               sort: 1,
-               children: [{
-                  value: 'shejiyuanze',
-                  label: '设计原则',
-                  parentCategoryId: 5,
-                  iconUrl: null,
-                  sort: 1,
-               }, {
-                  value: 'daohang',
-                  label: '导航',
-                  children: [{
-                     value: 'cexiangdaohang',
-                     label: '侧向导航'
-                  }, {
-                     value: 'dingbudaohang',
-                     label: '顶部导航'
-                  }]
-               }]
-            }, {
-               value: 'zujian',
-               label: '组件',
-               children: [{
-                  value: 'basic',
-                  label: 'Basic',
-               }, {
-                  value: 'form',
-                  label: 'Form',
-               }, {
-                  value: 'notice',
-                  label: 'Notice',
-               }, {
-                  value: 'navigation',
-                  label: 'Navigation',
-               }, {
-                  value: 'others',
-                  label: 'Others',
-               }]
-            }, {
-               value: 'ziyuan',
-               label: '资源',
-               children: [{
-                  value: 'axure',
-                  label: 'Axure Components'
-               }, {
-                  value: 'sketch',
-                  label: 'Sketch Templates'
-               }, {
-                  value: 'jiaohu',
-                  label: '组件交互文档'
-               }]
-            }],
             inputVisible: false,
             inputValue: '',
          }
