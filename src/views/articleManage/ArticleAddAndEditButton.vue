@@ -23,7 +23,8 @@
             </el-form-item>
             <!-- 分类 -->
             <el-form-item label="分类" :label-width="formLabelWidth" class="item">
-               <el-cascader clearable v-model="form1.categoryId" :options="category" :props="optionProps" :show-all-levels="false"></el-cascader>
+               <el-cascader clearable v-model="form1.categoryId" :options="category" :props="optionProps"
+                  :show-all-levels="false"></el-cascader>
             </el-form-item>
             <!-- 标签 -->
             <el-form-item label="标签" :label-width="formLabelWidth" class="item">
@@ -55,6 +56,7 @@
       name: 'ArticleAddAndEditButton',
       data() {
          return {
+            apiType: 'save',
             // 级联选择器 分类数据
             category: [],
             // 级联选择器 更改键名
@@ -167,6 +169,24 @@
             }
             this.inputVisible = false;
             this.inputValue = '';
+         },
+
+         // 刷新分类数据
+         refreshCategory() {
+            getCategory().then(res => {
+               // 分类数据清洗-删除subCategory长度为0时的category的subCategory
+               const categoryCleaning = function (categoryData) {
+                  for (let category of categoryData) {
+                     if (category.subCategory.length === 0) {
+                        Reflect.deleteProperty(category, 'subCategory')
+                     } else {
+                        categoryCleaning(category.subCategory)
+                     }
+                  }
+               }
+               categoryCleaning(res.data.data)
+               this.category = res.data.data
+            })
          }
       },
       watch: {
@@ -174,20 +194,7 @@
             // dialog显示
             if (newValue) {
                // 更新分类数据
-               getCategory().then(res => {
-                  // 分类数据清洗-删除subCategory长度为0时的category的subCategory
-                  const categoryCleaning = function (categoryData) {
-                     for(let category of categoryData) {
-                        if(category.subCategory.length === 0) {
-                           Reflect.deleteProperty(category, 'subCategory')
-                        }else {
-                           categoryCleaning(category.subCategory)
-                        }
-                     }
-                  }
-                  categoryCleaning(res.data.data)
-                  this.category = res.data.data
-               })
+               this.refreshCategory()
                // 判断当前是编辑还是添加，更新data
             }
          }
