@@ -86,6 +86,12 @@ export function policy() {
     })
 }
 
+/**
+ * 传图片到服务器
+ * @param {*} host 请求地址
+ * @param {*} formData 签名
+ * @returns 
+ */
 export function postImg(host, formData) {
     return request({
         url: host,
@@ -94,3 +100,17 @@ export function postImg(host, formData) {
         headers: { 'Content-Type': 'multipart/form-data' }
     })
 }
+
+/**
+ * 根据id获取文章详情 
+ * @param {*} articleId 文章id
+ * @returns 
+ */
+export function getArticleInfo(articleId) {
+    return request({
+        url: `article/info/${articleId}`,
+        method: 'get',
+        headers: { 'Content-Type': 'multipart/form-data' }
+    })
+}
+

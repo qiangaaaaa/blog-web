@@ -50,6 +50,8 @@
    </div>
 </template>
 <script>
+   import { getArticleInfo } from 'network/article.js'
+
    export default {
       name: 'ArticleAddAndEditButton',
       data() {
@@ -130,6 +132,7 @@
          }
       },
       created() {
+         
       },
       computed: {
       },
