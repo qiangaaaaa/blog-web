@@ -2,28 +2,30 @@
    <div id="article-add-edit">
       <el-button type="text" @click="dialogFormVisible = true">打开嵌套表单的 Dialog</el-button>
       <el-dialog title="文章编辑" :visible.sync="dialogFormVisible" fullscreen>
-         <el-form :model="form1" class="form">
+         <el-form :model="form" class="form">
             <!-- 标题 -->
             <el-form-item label="标题" :label-width="formLabelWidth" class="item">
-               <el-input v-model="form1.title" autocomplete="off"></el-input>
+               <el-input v-model="form.title" autocomplete="off"></el-input>
             </el-form-item>
             <!-- 封面 -->
             <el-form-item label="封面" :label-width="formLabelWidth" class="item" id="upload">
                <div class="cover">
-                  <el-image :src="form1.imageUrl">
+                  <el-image :src="form.imageUrl">
                      <div slot="error" class="image-slot">
                         <i class="el-icon-picture-outline-round"></i>
                      </div>
                   </el-image>
                </div>
-               <el-upload class="upload-demo" drag action="https://jsonplaceholder.typicode.com/posts/" multiple>
+               <el-upload class="upload-demo" drag :action="imgUploadHost" multiple :before-upload="beforeUpload"
+                  list-type="picture" :data="uploadData" :on-success="handleUploadSuccess"
+                  :on-error="handleUploadError">
                   <i class="el-icon-upload"></i>
                   <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
                </el-upload>
             </el-form-item>
             <!-- 分类 -->
             <el-form-item label="分类" :label-width="formLabelWidth" class="item">
-               <el-cascader clearable v-model="form1.categoryId" :options="category" :props="optionProps"
+               <el-cascader clearable v-model="form.categoryId" :options="category" :props="optionProps"
                   :show-all-levels="false"></el-cascader>
             </el-form-item>
             <!-- 标签 -->
@@ -32,17 +34,17 @@
                   @close="handleClose(tag)">
                   {{tag}}
                </el-tag>
-               <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small"
+               <el-input class="input-new-tag" v-if="inputVisible" v-model="inputLabel" ref="saveTagInput" size="small"
                   @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm">
                </el-input>
-               <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+               <el-button v-else class="button-new-tag" size="small" @click="showLabelInput">+ New Tag</el-button>
             </el-form-item>
             <!-- Markdown编辑器 -->
             <el-form-item :label-width="formLabelWidth" class="item">
-               <mavon-editor class="editor" v-model="form1.content" :scrollStyle="true" />
+               <mavon-editor class="editor" v-model="form.content" :scrollStyle="true" />
             </el-form-item>
          </el-form>
-         <p>{{form1}}</p>
+         <p>{{form}}</p>
          <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
             <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
@@ -51,13 +53,22 @@
    </div>
 </template>
 <script>
-   import { getArticleInfo, saveArticle } from 'network/article.js'
+   import { getArticleInfo, saveArticle, policy, postImg } from 'network/article.js'
    import { getCategory } from 'network/category.js'
+   import { addUser } from 'network/common.js'
+   import { getUuid } from 'common/utils.js'
+
    export default {
       name: 'ArticleAddAndEditButton',
       data() {
          return {
+            // upload 图片上传的服务器路径
+            imgUploadHost: 'https://blog-lh.oss-cn-chengdu.aliyuncs.com',
+            // upload 传输的数据
+            uploadData: {},
             apiType: 'save',
+            // 标签 添加标签临时存储
+            inputLabel: '',
             // 级联选择器 分类数据
             category: [],
             // 级联选择器 props配置
@@ -67,19 +78,23 @@
                children: 'subCategory',
                emitPath: false
             },
-            form1: {
+            // 表单
+            form: {
                title: '',
                imageUrl: '',
                categoryId: '',
                labelIds: [],
                content: ''
             },
+            // uploadInfo 上传信息
+            uploadInfo: {
+
+            },
             dynamicTags: ['标签一', '标签二', '标签三'], // 标签名
             handbook: '',
             dialogFormVisible: false,
             formLabelWidth: '70px',
             inputVisible: false,
-            inputValue: '',
          }
       },
       created() {
@@ -87,24 +102,59 @@
       computed: {
       },
       methods: {
+         // upload 在上传之前 获取签名
+         beforeUpload() {
+            return policy().then(res => {
+               // 获取签名
+               const { dir, policy, accessid, signature } = res.data.data
+               const key = dir + getUuid()
+               this.imgUploadHost = res.data.data.host || 'https://blog-lh.oss-cn-chengdu.aliyuncs.com'
+               const formData = {
+                  key,
+                  policy,
+                  OSSAccessKeyId: accessid,
+                  signature,
+                  'success_action_status': 200
+               }
+               console.log('测试图片访问路径：https://blog-lh.oss-cn-chengdu.aliyuncs.com/' + key);
+               this.uploadData = formData
+               return new Promise((resolve) => {
+                  resolve(true)
+               })
+            }).catch(err => {
+               return new Promise((resolve, reject) => {
+                  reject(false)
+               })
+            })
+         },
+         // upload上传成功时的钩子
+         handleUploadSuccess(response, file, fileList) {
+            console.log('success：', this.uploadData);
+         },
+         // upload上传失败时的钩子
+         handleUploadError(err, file) {
+            console.log('error：', this.uploadData);
+         },
+         // label 删除选中label的事件处理函数
          handleClose(tag) {
             this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
          },
-
-         showInput() {
+         // label 点击新增的事件处理函数
+         showLabelInput() {
             this.inputVisible = true;
             this.$nextTick(_ => {
                this.$refs.saveTagInput.$refs.input.focus();
             });
          },
-
+         // label 手动输入确认
          handleInputConfirm() {
-            let inputValue = this.inputValue;
-            if (inputValue) {
-               this.dynamicTags.push(inputValue);
+            let inputLabel = this.inputLabel;
+            if (inputLabel) {
+               this.addLabel(inputLabel)
+               // this.dynamicTags.push(inputLabel);
             }
             this.inputVisible = false;
-            this.inputValue = '';
+            this.inputLabel = '';
          },
 
          // 刷新分类数据
@@ -123,7 +173,22 @@
                categoryCleaning(res.data.data)
                this.category = res.data.data
             })
+         },
+
+         // 添加新标签
+         addLabel(labelName) {
+            addUser('label/save', labelName).then(res => {
+               if (res.data.staus == 0) {
+                  // 数据库添加成功
+                  this.dynamicTags.push(labelName);
+               } else {
+                  // 数据库添加失败
+                  // do something ...
+               }
+
+            })
          }
+
       },
       watch: {
          dialogFormVisible(newValue, oldValue) {
