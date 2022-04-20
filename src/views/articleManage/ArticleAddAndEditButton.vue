@@ -10,8 +10,8 @@
             <!-- 封面 -->
             <el-form-item label="封面" :label-width="formLabelWidth" class="item" id="upload">
                <el-upload class="upload-demo" drag :action="imgUploadHost" :before-upload="beforeUpload"
-                  list-type="picture" :data="uploadData" :on-success="handleUploadSuccess" :limit="1" :on-remove="handleRemove"
-                  :on-error="handleUploadError">
+                  list-type="picture" :data="uploadData" :on-success="handleUploadSuccess" :limit="1"
+                  :on-remove="handleRemove" :on-error="handleUploadError">
                   <i class="el-icon-upload"></i>
                   <div class="el-upload__tip" slot="tip">只能上传1张图片，大小不限制</div>
                </el-upload>
@@ -34,7 +34,7 @@
             </el-form-item>
             <!-- Markdown编辑器 -->
             <el-form-item :label-width="formLabelWidth" class="item">
-               <mavon-editor class="editor" v-model="form.content" :scrollStyle="true" />
+               <mavon-editor ref="md" class="editor" v-model="form.content" @imgAdd="$imgAdd" :scrollStyle="true" />
             </el-form-item>
          </el-form>
          <p>{{form}}</p>
@@ -109,7 +109,7 @@
                   signature,
                   'success_action_status': 200
                }
-               console.log('测试图片访问路径：https://blog-lh.oss-cn-chengdu.aliyuncs.com/' + key);
+               console.log('upload测试图片访问路径：https://blog-lh.oss-cn-chengdu.aliyuncs.com/' + key);
                this.uploadData = formData // 更新上传数据
                this.form.imageUrl = 'https://blog-lh.oss-cn-chengdu.aliyuncs.com/' + key // 更新form表单img路径
                return new Promise((resolve) => {
@@ -151,6 +151,42 @@
             }
             this.inputVisible = false;
             this.inputLabel = '';
+         },
+         // mavon-editor 图片上传
+         $imgAdd(pos, $file) {
+            let host = ''
+            let changeImgUrl = ''
+            policy().then(res => {
+               // 获取签名
+               const { dir, policy, accessid, signature } = res.data.data
+               const key = dir + getUuid()
+               host = res.data.data.host || 'https://blog-lh.oss-cn-chengdu.aliyuncs.com'
+               const formData = {
+                  key,
+                  policy,
+                  OSSAccessKeyId: accessid,
+                  signature,
+                  'success_action_status': 200
+               }
+               console.log('mavon-editor测试图片访问路径：https://blog-lh.oss-cn-chengdu.aliyuncs.com/' + key);
+               // 图片URL初始化
+               changeImgUrl = 'https://blog-lh.oss-cn-chengdu.aliyuncs.com/' + key
+               return new Promise((resolve) => {
+                  resolve(formData)
+               })
+            }).then(res => {
+               // 整理要发送的数据
+               let formData = new FormData()
+               for (let item in res) {
+                  formData.append(item, res[item])
+               }
+               formData.append('file', $file);
+               return postImg(host, formData)
+            }).then(res => {
+               // mavon-editor切换图片路径
+               this.$refs.md.$img2Url(pos, changeImgUrl)
+               console.log('mavon-editor：上传图片成功');
+            })
          },
 
          // 刷新分类数据
