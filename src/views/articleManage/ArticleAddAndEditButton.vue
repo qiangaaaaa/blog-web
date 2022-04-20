@@ -9,18 +9,11 @@
             </el-form-item>
             <!-- 封面 -->
             <el-form-item label="封面" :label-width="formLabelWidth" class="item" id="upload">
-               <div class="cover">
-                  <el-image :src="form.imageUrl">
-                     <div slot="error" class="image-slot">
-                        <i class="el-icon-picture-outline-round"></i>
-                     </div>
-                  </el-image>
-               </div>
-               <el-upload class="upload-demo" drag :action="imgUploadHost" multiple :before-upload="beforeUpload"
-                  list-type="picture" :data="uploadData" :on-success="handleUploadSuccess"
+               <el-upload class="upload-demo" drag :action="imgUploadHost" :before-upload="beforeUpload"
+                  list-type="picture" :data="uploadData" :on-success="handleUploadSuccess" :limit="1" :on-remove="handleRemove"
                   :on-error="handleUploadError">
                   <i class="el-icon-upload"></i>
-                  <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+                  <div class="el-upload__tip" slot="tip">只能上传1张图片，大小不限制</div>
                </el-upload>
             </el-form-item>
             <!-- 分类 -->
@@ -117,7 +110,8 @@
                   'success_action_status': 200
                }
                console.log('测试图片访问路径：https://blog-lh.oss-cn-chengdu.aliyuncs.com/' + key);
-               this.uploadData = formData
+               this.uploadData = formData // 更新上传数据
+               this.form.imageUrl = 'https://blog-lh.oss-cn-chengdu.aliyuncs.com/' + key // 更新form表单img路径
                return new Promise((resolve) => {
                   resolve(true)
                })
@@ -127,13 +121,15 @@
                })
             })
          },
-         // upload上传成功时的钩子
+         // upload 上传成功时的钩子
          handleUploadSuccess(response, file, fileList) {
-            console.log('success：', this.uploadData);
          },
-         // upload上传失败时的钩子
+         // upload 上传失败时的钩子
          handleUploadError(err, file) {
-            console.log('error：', this.uploadData);
+         },
+         // upload 文件列表移除文件时的钩子
+         handleRemove(file, fileList) {
+            this.form.imageUrl = '' // 图片路径置空
          },
          // label 删除选中label的事件处理函数
          handleClose(tag) {
@@ -205,21 +201,6 @@
    }
 </script>
 <style scoped>
-   /* 封面图片大小 */
-   .cover {
-      float: left;
-      margin-right: 20px;
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      font-size: 25px;
-      height: 60px;
-      width: 60px;
-
-   }
-
    /* 样式穿透，修改vue组件样式 */
    .item>>>.el-form-item_content {
       line-height: 20px !important;
