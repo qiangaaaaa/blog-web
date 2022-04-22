@@ -6,11 +6,13 @@
         <data-show @rowSelected="rowSelected" :tableData="tableData" :url='url' :keys="keys"
             @currPageChange="currPageChange" @refresh="refresh">
         </data-show>
+        <article-add-and-edit-button></article-add-and-edit-button>
     </div>
 </template>
 <script>
-    import Domain from 'components/content/domain/Domain'
-    import DataShow from 'components/content/dataShow/DataShow'
+    import Domain from './ArticleDomain'
+    import DataShow from './ArticleDataShow'
+    import ArticleAddAndEditButton from './ArticleAddAndEditButton'
 
     import { getAllArticle } from 'network/article'
 
@@ -84,7 +86,8 @@
         },
         components: {
             Domain,
-            DataShow
+            DataShow,
+            ArticleAddAndEditButton
         }
     }
 </script>
