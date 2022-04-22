@@ -4,11 +4,11 @@
       <el-dialog title="文章编辑" :visible.sync="dialogFormVisible" fullscreen>
          <el-form :model="form" class="form">
             <!-- 标题 -->
-            <el-form-item label="标题" :label-width="formLabelWidth" class="item">
+            <el-form-item label="标题：" :label-width="formLabelWidth" class="item">
                <el-input v-model="form.title" autocomplete="off"></el-input>
             </el-form-item>
             <!-- 封面 -->
-            <el-form-item label="封面" :label-width="formLabelWidth" class="item" id="upload">
+            <el-form-item label="封面：" :label-width="formLabelWidth" class="item" id="upload">
                <el-upload class="upload-demo" drag :action="imgUploadHost" :before-upload="beforeUpload"
                   list-type="picture" :data="uploadData" :on-success="handleUploadSuccess" :limit="1"
                   :on-remove="handleRemove" :on-error="handleUploadError">
@@ -17,12 +17,12 @@
                </el-upload>
             </el-form-item>
             <!-- 分类 -->
-            <el-form-item label="分类" :label-width="formLabelWidth" class="item">
+            <el-form-item label="分类：" :label-width="formLabelWidth" class="item">
                <el-cascader clearable v-model="form.categoryId" :options="category" :props="optionProps"
                   :show-all-levels="false"></el-cascader>
             </el-form-item>
             <!-- 标签 -->
-            <el-form-item label="标签" :label-width="formLabelWidth" class="item">
+            <el-form-item label="标签：" :label-width="formLabelWidth" class="item">
                <el-tag :key="tag" v-for="tag in dynamicTags" closable :disable-transitions="false"
                   @close="handleClose(tag)">
                   {{tag}}
@@ -38,7 +38,7 @@
             </el-form-item>
          </el-form>
          <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button @click="dialogCancel">取 消</el-button>
             <el-button type="primary" @click="dialogSubmit">确 定</el-button>
          </div>
       </el-dialog>
@@ -48,7 +48,7 @@
    import { getArticleInfo, saveArticle, policy, postImg } from 'network/article.js'
    import { getCategory } from 'network/category.js'
    import { addUser } from 'network/common.js'
-   import { getUuid } from 'common/utils.js'
+   import { getUuid, deepClone } from 'common/utils.js'
 
    export default {
       name: 'ArticleAddAndEditButton',
@@ -78,6 +78,14 @@
                labelIds: [],
                content: ''
             },
+            // 原始表单
+            formOrigin: {
+               title: '',
+               imageUrl: '',
+               categoryId: '',
+               labelIds: [],
+               content: ''
+            },
             dynamicTagsObj: {}, // 标签
             dialogFormVisible: false, // dialog是否显示
             formLabelWidth: '70px',
@@ -96,8 +104,21 @@
          dialogSubmit() {
             // 上传保存文章
             saveArticle(this.form).then(res => {
+               this.$message({
+                  type: 'success',
+                  message: '上传成功'
+               });
                this.dialogFormVisible = false
             })
+         },
+         // dialog 点击取消事件触发函数
+         dialogCancel() {
+            this.$message({
+               type: 'success',
+               message: '取消成功'
+            });
+            this.dialogFormVisible = false
+            this.form = deepClone(this.formOrigin) // 数据还原
          },
          // upload 在上传之前 获取签名
          beforeUpload() {
@@ -127,17 +148,33 @@
          },
          // upload 上传成功时的钩子
          handleUploadSuccess(response, file, fileList) {
+            this.$message({
+               type: 'success',
+               message: '封面上传成功！'
+            });
          },
          // upload 上传失败时的钩子
          handleUploadError(err, file) {
+            this.$message({
+               type: 'error',
+               message: '未知错误，封面上传失败'
+            });
          },
          // upload 文件列表移除文件时的钩子
          handleRemove(file, fileList) {
             this.form.imageUrl = '' // 图片路径置空
+            this.$message({
+               type: 'info',
+               message: '文件移除成功'
+            });
          },
          // label 删除选中label的事件处理函数
          handleClose(tag) {
             this.delLabel(tag)
+            this.$message({
+               type: 'success',
+               message: '标签删除成功'
+            });
          },
          // label 点击新增的事件处理函数
          showLabelInput() {
@@ -162,6 +199,10 @@
                   }
                })
             }
+            this.$message({
+               type: 'success',
+               message: '新增标签成功'
+            });
             this.inputVisible = false;
             this.inputLabel = '';
          },

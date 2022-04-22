@@ -86,10 +86,35 @@ function getUuid() {
     })
 }
 
+/**
+ * 深克隆
+ * @param {*} Obj 
+ * @returns 
+ */
+function deepClone(Obj) {
+    let res = null
+    if (Array.isArray(Obj)) {
+        res = []
+        for (let item of Obj) {
+            res.push(deepClone(item))
+        }
+    } else if (typeof (Obj) === 'object') {
+        res = {}
+        for (let item in Obj) {
+            res[item] = deepClone(Obj[item])
+        }
+    } else {
+        res = Obj
+    }
+    return res
+}
+
+
 export {
     debounce,
     clearData,
     getMaxDepth,
     throttle,
-    getUuid
+    getUuid,
+    deepClone
 }
