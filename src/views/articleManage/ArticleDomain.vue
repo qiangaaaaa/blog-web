@@ -17,13 +17,18 @@
             </data-delete-button>
         </div>
         <div class="addButton">
-            <data-add-button :keys="keys.slice(1)" :requestUrl="addButtonRequestUrl" @refresh="refresh"></data-add-button>
+            <!-- <data-add-button :keys="keys.slice(1)" :requestUrl="addButtonRequestUrl" @refresh="refresh"></data-add-button> -->
+            <article-add-and-edit-button :requestUrl="addButtonRequestUrl" @refresh="refresh">
+            </article-add-and-edit-button>
         </div>
+
     </div>
 </template>
 <script>
     import DataDeleteButton from 'components/common/dataDeleteButton/DataDeleteButton'
     import DataAddButton from 'components/common/dataAddButton/DataAddButton'
+    import ArticleAddAndEditButton from './ArticleAddAndEditButton'
+
     import { searchInputDebounceMixin } from 'common/mixin'
 
     export default {
@@ -84,7 +89,8 @@
         },
         components: {
             DataDeleteButton,
-            DataAddButton
+            DataAddButton,
+            ArticleAddAndEditButton
         },
         props: {
             keys: {

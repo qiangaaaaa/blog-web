@@ -6,7 +6,6 @@
         <data-show @rowSelected="rowSelected" :tableData="tableData" :url='url' :keys="keys"
             @currPageChange="currPageChange" @refresh="refresh">
         </data-show>
-        <article-add-and-edit-button></article-add-and-edit-button>
     </div>
 </template>
 <script>

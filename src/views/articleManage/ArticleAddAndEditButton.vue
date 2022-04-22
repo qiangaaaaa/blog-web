@@ -1,7 +1,8 @@
 <template>
    <div id="article-add-edit">
-      <el-button type="text" @click="dialogFormVisible = true">打开嵌套表单的 Dialog</el-button>
-      <el-dialog title="文章编辑" :visible.sync="dialogFormVisible" fullscreen>
+      <el-button type="success" icon="el-icon-plus" round @click="dialogFormVisible = true">添加</el-button>
+      
+      <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" fullscreen>
          <el-form :model="form" class="form">
             <!-- 标题 -->
             <el-form-item label="标题：" :label-width="formLabelWidth" class="item">
@@ -45,7 +46,7 @@
    </div>
 </template>
 <script>
-   import { getArticleInfo, saveArticle, policy, postImg } from 'network/article.js'
+   import { getArticleInfo, saveArticle, updateArticle, policy, postImg } from 'network/article.js'
    import { getCategory } from 'network/category.js'
    import { addUser } from 'network/common.js'
    import { getUuid, deepClone } from 'common/utils.js'
@@ -90,24 +91,45 @@
             dialogFormVisible: false, // dialog是否显示
             formLabelWidth: '70px',
             inputVisible: false,
+            postDataFn: null, // 保存函数
+            dialogType: 'save' // dialog 类型
          }
       },
       created() {
+         // 初始化dialog类型
+         const buttonType = this.requestUrl.split('/')[1] // 按钮类型
+         if (buttonType === 'save') {
+            this.postDataFn = saveArticle
+            this.dialogType = 'save'
+         } else if (buttonType === "update") {
+            this.postDataFn = updateArticle
+            this.dialogType = 'update'
+         }
       },
       computed: {
+         // 标签名
          dynamicTags() {
             return Object.keys(this.dynamicTagsObj)
+         },
+         // dialog标题 类型
+         dialogTitle() {
+            if(this.dialogType === 'save') {
+               return '添加文章'
+            }else if(this.dialogType === 'update') {
+               return '编辑文章'
+            }
          }
       },
       methods: {
          // dialog 点击确认事件触发函数
          dialogSubmit() {
             // 上传保存文章
-            saveArticle(this.form).then(res => {
+            this.postDataFn(this.form).then(res => {
                this.$message({
                   type: 'success',
                   message: '上传成功'
                });
+               this.$emit('refresh')
                this.dialogFormVisible = false
             })
          },
@@ -118,7 +140,6 @@
                message: '取消成功'
             });
             this.dialogFormVisible = false
-            this.form = deepClone(this.formOrigin) // 数据还原
          },
          // upload 在上传之前 获取签名
          beforeUpload() {
@@ -277,14 +298,23 @@
                // 更新分类数据
                this.refreshCategory()
                // 判断当前是编辑还是添加，更新data
+            } else {
+               this.form = deepClone(this.formOrigin) // 数据还原
+               this.dynamicTagsObj = {} // 数据还原
             }
          },
          // dynamicTagsObj 监听
          dynamicTagsObj(newValue, oldValue) {
             this.form.labelIds = Object.values(newValue)
-         }
+         },
       },
       props: {
+         requestUrl: {
+            type: String,
+            default() {
+               return ''
+            }
+         }
       }
    }
 </script>
