@@ -37,9 +37,6 @@
                <mavon-editor ref="md" class="editor" v-model="form.content" @imgAdd="$imgAdd" :scrollStyle="true" />
             </el-form-item>
          </el-form>
-         <p>{{form}}</p>
-         <p>{{dynamicTags}}</p>
-         <p>{{dynamicTagsObj}}</p>
          <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
             <el-button type="primary" @click="dialogSubmit">确 定</el-button>
@@ -82,7 +79,7 @@
                content: ''
             },
             dynamicTagsObj: {}, // 标签
-            dialogFormVisible: false,
+            dialogFormVisible: false, // dialog是否显示
             formLabelWidth: '70px',
             inputVisible: false,
          }
@@ -98,10 +95,8 @@
          // dialog 点击确认事件触发函数
          dialogSubmit() {
             // 上传保存文章
-            saveArticle(this.formData).then(res => {
-               console.log('保存成功！！！');
-               console.log(res);
-               dialogFormVisible = false
+            saveArticle(this.form).then(res => {
+               this.dialogFormVisible = false
             })
          },
          // upload 在上传之前 获取签名
@@ -242,6 +237,10 @@
                this.refreshCategory()
                // 判断当前是编辑还是添加，更新data
             }
+         },
+         // dynamicTagsObj 监听
+         dynamicTagsObj(newValue, oldValue) {
+            this.form.labelIds = Object.values(newValue)
          }
       },
       props: {
