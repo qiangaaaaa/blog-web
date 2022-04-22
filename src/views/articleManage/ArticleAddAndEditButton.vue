@@ -38,9 +38,11 @@
             </el-form-item>
          </el-form>
          <p>{{form}}</p>
+         <p>{{dynamicTags}}</p>
+         <p>{{dynamicTagsObj}}</p>
          <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            <el-button type="primary" @click="dialogSubmit">确 定</el-button>
          </div>
       </el-dialog>
    </div>
@@ -79,12 +81,7 @@
                labelIds: [],
                content: ''
             },
-            // uploadInfo 上传信息
-            uploadInfo: {
-
-            },
-            dynamicTags: ['标签一', '标签二', '标签三'], // 标签名
-            handbook: '',
+            dynamicTagsObj: {}, // 标签
             dialogFormVisible: false,
             formLabelWidth: '70px',
             inputVisible: false,
@@ -93,8 +90,20 @@
       created() {
       },
       computed: {
+         dynamicTags() {
+            return Object.keys(this.dynamicTagsObj)
+         }
       },
       methods: {
+         // dialog 点击确认事件触发函数
+         dialogSubmit() {
+            // 上传保存文章
+            saveArticle(this.formData).then(res => {
+               console.log('保存成功！！！');
+               console.log(res);
+               dialogFormVisible = false
+            })
+         },
          // upload 在上传之前 获取签名
          beforeUpload() {
             return policy().then(res => {
@@ -133,7 +142,7 @@
          },
          // label 删除选中label的事件处理函数
          handleClose(tag) {
-            this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+            this.delLabel(tag)
          },
          // label 点击新增的事件处理函数
          showLabelInput() {
@@ -144,13 +153,30 @@
          },
          // label 手动输入确认
          handleInputConfirm() {
-            let inputLabel = this.inputLabel;
-            if (inputLabel) {
-               this.addLabel(inputLabel)
-               // this.dynamicTags.push(inputLabel);
+            let labelName = this.inputLabel;
+            if (labelName) {
+               const postData = {
+                  labelName
+               }
+               addUser('label/save', postData).then(res => {
+                  if (res.data.status == 0) {
+                     // 数据库添加成功
+                     this.addLabel(labelName, res.data.data.labelId)
+                  } else {
+                     // 数据库添加失败
+                  }
+               })
             }
             this.inputVisible = false;
             this.inputLabel = '';
+         },
+         // label 添加新标签
+         addLabel(labelName, labelId) {
+            this.$set(this.dynamicTagsObj, labelName, labelId)
+         },
+         // label 删除标签
+         delLabel(labelName) {
+            this.$delete(this.dynamicTagsObj, labelName)
          },
          // mavon-editor 图片上传
          $imgAdd(pos, $file) {
@@ -189,7 +215,7 @@
             })
          },
 
-         // 刷新分类数据
+         // category 刷新分类数据
          refreshCategory() {
             getCategory().then(res => {
                // 分类数据清洗-删除subCategory长度为0时的category的subCategory
@@ -206,23 +232,9 @@
                this.category = res.data.data
             })
          },
-
-         // 添加新标签
-         addLabel(labelName) {
-            addUser('label/save', labelName).then(res => {
-               if (res.data.staus == 0) {
-                  // 数据库添加成功
-                  this.dynamicTags.push(labelName);
-               } else {
-                  // 数据库添加失败
-                  // do something ...
-               }
-
-            })
-         }
-
       },
       watch: {
+         // dialog 显示监听
          dialogFormVisible(newValue, oldValue) {
             // dialog显示
             if (newValue) {
