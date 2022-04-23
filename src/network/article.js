@@ -25,7 +25,7 @@ export function saveArticle(data) {
 
 // 修改文章
 export function updateArticle(data) {
-    const {articleId, title, content, labelIds} = data
+    const {articleId, title, content, imageUrl, categoryId, labelIds} = data
     return request({
         url: `article/update`,
         method: 'put',
@@ -33,6 +33,8 @@ export function updateArticle(data) {
             articleId,
             title,
             content,
+            imageUrl,
+            categoryId,
             labelIds
         }
     })

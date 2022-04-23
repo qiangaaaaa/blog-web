@@ -1,8 +1,11 @@
 <template>
    <div id="article-add-edit">
-      <el-button type="success" icon="el-icon-plus" round @click="dialogFormVisible = true">添加</el-button>
-      
+      <el-button v-if="dialogType === 'save'" type="success" icon="el-icon-plus" round
+         @click="dialogFormVisible = true">添加</el-button>
+      <el-button v-else type="primary" icon="el-icon-edit" circle @click="dialogFormVisible = true"></el-button>
+
       <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" fullscreen>
+         <p>{{form}}</p>
          <el-form :model="form" class="form">
             <!-- 标题 -->
             <el-form-item label="标题：" :label-width="formLabelWidth" class="item">
@@ -12,7 +15,7 @@
             <el-form-item label="封面：" :label-width="formLabelWidth" class="item" id="upload">
                <el-upload class="upload-demo" drag :action="imgUploadHost" :before-upload="beforeUpload"
                   list-type="picture" :data="uploadData" :on-success="handleUploadSuccess" :limit="1"
-                  :on-remove="handleRemove" :on-error="handleUploadError">
+                  :on-remove="handleRemove" :on-error="handleUploadError" :file-list="fileList">
                   <i class="el-icon-upload"></i>
                   <div class="el-upload__tip" slot="tip">只能上传1张图片，大小不限制</div>
                </el-upload>
@@ -59,7 +62,8 @@
             imgUploadHost: 'https://blog-lh.oss-cn-chengdu.aliyuncs.com',
             // upload 传输的数据
             uploadData: {},
-            apiType: 'save',
+            // upload fileList上传的文件列表
+            fileList: [],
             // 标签 添加标签临时存储
             inputLabel: '',
             // 级联选择器 分类数据
@@ -113,9 +117,9 @@
          },
          // dialog标题 类型
          dialogTitle() {
-            if(this.dialogType === 'save') {
+            if (this.dialogType === 'save') {
                return '添加文章'
-            }else if(this.dialogType === 'update') {
+            } else if (this.dialogType === 'update') {
                return '编辑文章'
             }
          }
@@ -123,12 +127,24 @@
       methods: {
          // dialog 点击确认事件触发函数
          dialogSubmit() {
+            const postData = {
+               articleId: this.articleId,
+               ...this.form
+            }
             // 上传保存文章
-            this.postDataFn(this.form).then(res => {
-               this.$message({
-                  type: 'success',
-                  message: '上传成功'
-               });
+            this.postDataFn(postData).then(res => {
+               if (res.data.status === 0) {
+                  this.$message({
+                     type: 'success',
+                     message: res.data.message
+                  });
+               } else {
+                  this.$message({
+                     type: 'error',
+                     message: res.data.message
+                  });
+               }
+
                this.$emit('refresh')
                this.dialogFormVisible = false
             })
@@ -136,7 +152,7 @@
          // dialog 点击取消事件触发函数
          dialogCancel() {
             this.$message({
-               type: 'success',
+               type: 'info',
                message: '取消成功'
             });
             this.dialogFormVisible = false
@@ -297,10 +313,38 @@
             if (newValue) {
                // 更新分类数据
                this.refreshCategory()
-               // 判断当前是编辑还是添加，更新data
+               // 编辑dialog 初始化
+               if (this.articleId !== '' && this.dialogType === 'update') {
+                  getArticleInfo(this.articleId).then(res => {
+                     const articleInfo = res.data.data
+                     for (let item in articleInfo) {
+                        if (this.formOrigin.hasOwnProperty(item)) {
+                           // 初始化数据
+                           this.formOrigin[item] = articleInfo[item]
+                           this.form[item] = articleInfo[item]
+                        }
+                     }
+                     // 初始化categoryId
+                     this.formOrigin['categoryId'] = articleInfo['category']['subCategory']['categoryId']
+                     this.form['categoryId'] = articleInfo['category']['subCategory']['categoryId']
+                     // 初始化label
+                     const labels = articleInfo['labels']
+                     labels.forEach(item => {
+                        this.addLabel(item.labelName, item.labelId)
+                     })
+                     // 初始化封面图片
+                     this.fileList = []
+                     this.fileList.push({
+                        name: '封面图片',
+                        url: articleInfo['imageUrl']
+                     })
+                  })
+               }
             } else {
-               this.form = deepClone(this.formOrigin) // 数据还原
-               this.dynamicTagsObj = {} // 数据还原
+               // 数据还原
+               this.form = deepClone(this.formOrigin)
+               this.dynamicTagsObj = {}
+               this.fileList = []
             }
          },
          // dynamicTagsObj 监听
@@ -314,11 +358,21 @@
             default() {
                return ''
             }
+         },
+         articleId: {
+            type: String,
+            default() {
+               return ''
+            }
          }
       }
    }
 </script>
 <style scoped>
+   #article-add-edit {
+      display: inline-block;
+   }
+
    /* 样式穿透，修改vue组件样式 */
    .item>>>.el-form-item_content {
       line-height: 20px !important;

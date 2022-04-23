@@ -8,8 +8,8 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <data-edit-button :data="scope.row" :requestUrl="editButtonRequestUrl" @refresh="refresh"></data-edit-button>
-                        <!-- <data-delete-button :data="[scope.row[Object.keys(scope.row)[0]]]" :deleteButton="deleteButton" requestUrl="casualuser/delete" @refresh="refresh"></data-delete-button> -->
+                        <article-add-and-edit-button :requestUrl="editButtonRequestUrl" @refresh="refresh" :articleId="scope.row.articleId + ''">
+                        </article-add-and-edit-button>
                         <data-delete-button :data="Object.values(scope.row).slice(0,1)" :deleteButton="deleteButton" :requestUrl="delButtonRequestUrl" @refresh="refresh"></data-delete-button>
                     </template>
                 </el-table-column>
@@ -26,6 +26,7 @@
 <script>
     import DataEditButton from 'components/common/dataEditButton/DataEditButton'
     import DataDeleteButton from 'components/common/dataDeleteButton/DataDeleteButton'
+    import ArticleAddAndEditButton from './ArticleAddAndEditButton'
     export default {
         name: 'DataShow',
         data() {
@@ -68,7 +69,8 @@
         },
         components: {
             DataEditButton,
-            DataDeleteButton
+            DataDeleteButton,
+            ArticleAddAndEditButton
         },
         props: {
             tableData: {
