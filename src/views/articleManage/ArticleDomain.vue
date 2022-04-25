@@ -17,7 +17,6 @@
             </data-delete-button>
         </div>
         <div class="addButton">
-            <!-- <data-add-button :keys="keys.slice(1)" :requestUrl="addButtonRequestUrl" @refresh="refresh"></data-add-button> -->
             <article-add-and-edit-button :requestUrl="addButtonRequestUrl" @refresh="refresh">
             </article-add-and-edit-button>
         </div>

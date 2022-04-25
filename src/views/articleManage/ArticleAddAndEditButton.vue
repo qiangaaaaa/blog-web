@@ -5,7 +5,6 @@
       <el-button v-else type="primary" icon="el-icon-edit" circle @click="dialogFormVisible = true"></el-button>
 
       <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" fullscreen>
-         <p>{{form}}</p>
          <el-form :model="form" class="form">
             <!-- 标题 -->
             <el-form-item label="标题：" :label-width="formLabelWidth" class="item">
@@ -133,6 +132,8 @@
             }
             // 上传保存文章
             this.postDataFn(postData).then(res => {
+               console.log(`${this.dialogType}结果：`);
+               console.log(res);
                if (res.data.status === 0) {
                   this.$message({
                      type: 'success',
@@ -228,18 +229,20 @@
                   labelName
                }
                addUser('label/save', postData).then(res => {
-                  if (res.data.status == 0) {
-                     // 数据库添加成功
+                  if (res.data.status === 0) {
                      this.addLabel(labelName, res.data.data.labelId)
+                     this.$message({
+                        type: 'success',
+                        message: res.data.message
+                     });
                   } else {
-                     // 数据库添加失败
+                     this.$message({
+                        type: 'error',
+                        message: res.data.message
+                     });
                   }
                })
             }
-            this.$message({
-               type: 'success',
-               message: '新增标签成功'
-            });
             this.inputVisible = false;
             this.inputLabel = '';
          },
