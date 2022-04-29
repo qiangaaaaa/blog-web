@@ -26,7 +26,9 @@
                     </div>
                     <div class="styled-input__circle"></div>
                 </div>
-                <button class="styled-button" @click="login">登录</button>
+                <el-button class="styled-button" @click="login">
+                    登录
+                </el-button>
             </div>
         </div>
 
@@ -48,8 +50,15 @@
         },
         methods: {
             login() {
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
                 // login(this.loginAccount, this.password).then(res => {
                 login().then(res => {
+                    loading.close();
                     if (res.data.status == '9999') {
                         this.$message({
                             type: 'error',
