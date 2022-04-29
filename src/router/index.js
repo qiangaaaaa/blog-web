@@ -7,6 +7,7 @@ const LabelManage = () => import('../views/labelManage/LabelManage');
 const ArticleManage = () => import('../views/articleManage/ArticleManage');
 const CategoryManage = () => import('../views/categoryManage/CategoryManage');
 const Manage = () => import('../views/manage/Manage');
+const UserLogin = () => import('../views/userLogin/UserLogin');
 const ArticleAddAndEditButton = () => import('../views/articleManage/ArticleAddAndEditButton')
 
 Vue.use(VueRouter)
@@ -15,32 +16,43 @@ Vue.use(VueRouter)
 const routes = [
     {
         path: '',
-        redirect: '/casualUserManage'
+        redirect: '/login'
     },
     {
-        path: '/casualUserManage',
-        component: CasualUserManage
+        path: '/login',
+        component: UserLogin
     },
     {
-        path: '/labelManage',
-        component: LabelManage
+        path: '/manage',
+        component: Manage,
+        children: [
+            {
+                path: '',
+                component: CasualUserManage
+            },
+            {
+                path: '/casualUserManage',
+                component: CasualUserManage
+            },
+            {
+                path: '/labelManage',
+                component: LabelManage
+            },
+            {
+                path: '/articleManage',
+                component: ArticleManage
+            },
+            {
+                path: '/categoryManage',
+                component: CategoryManage
+            },
+            {
+                path: '/son2',
+                component: ArticleAddAndEditButton
+            }
+        ]
     },
-    {
-        path: '/articleManage',
-        component: ArticleManage
-    },
-    {
-        path: '/categoryManage',
-        component: CategoryManage
-    },
-    {
-        path: '/son1',
-        component: Manage
-    },
-    {
-        path: '/son2',
-        component: ArticleAddAndEditButton
-    }
+
 ]
 
 const router = new VueRouter({
