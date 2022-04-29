@@ -3,7 +3,7 @@
         <!-- 功能区 -->
         <domain :selection="selection" :keys="keys" @refresh="refresh" :url='url'></domain>
         <!-- 信息展示区 -->
-        <data-show @rowSelected="rowSelected" :tableData="tableData" :url='url' :keys="keys" @currPageChange="currPageChange" @refresh="refresh">
+        <data-show @rowSelected="rowSelected" :loading="loading" :tableData="tableData" :url='url' :keys="keys" @currPageChange="currPageChange" @refresh="refresh">
         </data-show>
     </div>
 </template>
@@ -22,6 +22,7 @@
                 page: 1, // 当前访问到第几页数据
                 keys: [], // 表头
                 url: 'casualuser', // 用于网络请求定位是哪个表,
+                loading: false, //是否处于异步网络请求中
             }
         },
         created() {
@@ -32,6 +33,7 @@
         },
         watch: {
             page(newValue, oldValue) {
+                this.loading = true
                 this.getData()
             }
         },
@@ -42,12 +44,16 @@
             },
             // 请求getCasualUserData封装
             getData(dataPage = this.page, dataKey = '') {
+                // loading
+                this.loading = true
                 getCasualUserData(dataPage, dataKey).then(res => {
                     this.tableData = res.data.data
                     // 更新表头
                     this.keys = Object.keys(this.tableData.list[0] || {})
                     // 手动表头
                     this.keys = this.keys.length === 0 ? ["casualUserId","email","nickname"] : this.keys
+                    // loading
+                    this.loading = false
                 })
             },
             currPageChange(currPage) {

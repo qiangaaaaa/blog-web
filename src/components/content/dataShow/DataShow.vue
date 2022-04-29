@@ -1,7 +1,7 @@
 <template>
     <div class="data-show">
         <template>
-            <el-table :data="list" style="width: 100%" @select="tableSelect" @select-all="tableSelect">
+            <el-table v-loading="loading" :data="list" style="width: 100%" @select="tableSelect" @select-all="tableSelect">
                 <el-table-column type="selection" width="55">
                 </el-table-column>
                 <el-table-column :prop="item" :label="item" v-for="(item,index) in keys" :key="index">
@@ -87,6 +87,12 @@
                 type: String,
                 default() {
                     return ''
+                }
+            },
+            loading: {
+                type: Boolean,
+                default() {
+                    return false
                 }
             }
         },

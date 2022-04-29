@@ -24,6 +24,7 @@
                 page: 1, // 当前访问到第几页数据
                 keys: [], // 表头
                 url: 'article', // 用于网络请求定位是哪个表,
+                loading: false, // 正loading
             }
         },
         created() {
@@ -44,6 +45,8 @@
             },
             // 请求getCasualUserData封装
             getData(dataPage = this.page, dataKey = '') {
+                // 异步开始
+                this.loading = true 
                 getAllArticle(dataPage, dataKey).then(res => {
                     // 洗list
                     const newRes = res.data.data
@@ -71,6 +74,9 @@
                     this.keys = Object.keys(this.tableData.list[0] || {})
                     // 手动表头
                     this.keys = this.keys.length === 0 ? ["articleId", "title", "publishTime", "editTime"] : this.keys
+
+                    // 异步结束
+                    this.loading = false
                 })
             },
             currPageChange(currPage) {

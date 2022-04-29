@@ -59,7 +59,7 @@
                         this.$router.push('/manage').catch(err => err)
                         this.$message({
                             type: 'success',
-                            message: '大人，您回来了！快来管管你这些数据吧...'
+                            message: '大人，您回来了！快来管管您这些数据吧...'
                         });
                     }
                 })
@@ -256,7 +256,6 @@
 
     .styled-button {
         -webkit-appearance: none;
-        -webkit-user-select: none;
         cursor: pointer;
         font-size: 14px;
         width: 100%;
