@@ -25,30 +25,51 @@ const routes = [
     {
         path: '/manage',
         component: Manage,
+        meta: {
+            requireLogin:true
+        },
         children: [
             {
                 path: '',
-                component: CasualUserManage
+                component: CasualUserManage,
+                meta: {
+                    requireLogin:true
+                },
             },
             {
                 path: '/casualUserManage',
-                component: CasualUserManage
+                component: CasualUserManage,
+                meta: {
+                    requireLogin:true
+                },
             },
             {
                 path: '/labelManage',
-                component: LabelManage
+                component: LabelManage,
+                meta: {
+                    requireLogin:true
+                },
             },
             {
                 path: '/articleManage',
-                component: ArticleManage
+                component: ArticleManage,
+                meta: {
+                    requireLogin:true
+                },
             },
             {
                 path: '/categoryManage',
-                component: CategoryManage
+                component: CategoryManage,
+                meta: {
+                    requireLogin:true
+                },
             },
             {
                 path: '/son2',
-                component: ArticleAddAndEditButton
+                component: ArticleAddAndEditButton,
+                meta: {
+                    requireLogin:true
+                },
             }
         ]
     },

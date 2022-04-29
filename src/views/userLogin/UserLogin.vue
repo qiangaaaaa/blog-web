@@ -45,6 +45,7 @@
             }
         },
         created() {
+
         },
         computed: {
         },
@@ -65,6 +66,8 @@
                             message: res.data.message
                         });
                     } else {
+                        // 本地添加sessionStorage记录登录状态
+                        sessionStorage.setItem('loginInfo',JSON.stringify(res.data.status));
                         this.$router.push('/manage').catch(err => err)
                         this.$message({
                             type: 'success',
