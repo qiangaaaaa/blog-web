@@ -58,26 +58,26 @@
                         icon: 'el-icon-s-order',
                         item: []
                     },
-                    {
-                        isHaveSon: true,
-                        path: '/son1',
-                        name: '测试区',
-                        icon: 'el-icon-loading',
-                        item: [
-                            {
-                                path: '/son1',
-                                name: '文章管理Model'
-                            },
-                            {
-                                path: '/son2',
-                                name: '文章页添加修改按钮'
-                            },
-                            {
-                                path: '/son3',
-                                name: '儿子son3'
-                            },
-                        ]
-                    },
+                    // {
+                    //     isHaveSon: true,
+                    //     path: '/son1',
+                    //     name: '测试区',
+                    //     icon: 'el-icon-loading',
+                    //     item: [
+                    //         {
+                    //             path: '/son1',
+                    //             name: '文章管理Model'
+                    //         },
+                    //         {
+                    //             path: '/son2',
+                    //             name: '文章页添加修改按钮'
+                    //         },
+                    //         {
+                    //             path: '/son3',
+                    //             name: '儿子son3'
+                    //         },
+                    //     ]
+                    // },
                 ]
             }
         },
