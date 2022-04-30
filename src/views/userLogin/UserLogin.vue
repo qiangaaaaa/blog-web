@@ -57,8 +57,8 @@
                     spinner: 'el-icon-loading',
                     background: 'rgba(0, 0, 0, 0.7)'
                 });
-                // login(this.loginAccount, this.password).then(res => {
-                login().then(res => {
+                login(this.loginAccount, this.password).then(res => {
+                // login().then(res => {
                     loading.close();
                     if (res.data.status == '9999') {
                         this.$message({
@@ -71,7 +71,7 @@
                         this.$router.push('/manage').catch(err => err)
                         this.$message({
                             type: 'success',
-                            message: '大人，您回来了！快来管管您这些数据吧...'
+                            message: '欢迎回来'
                         });
                     }
                 })
